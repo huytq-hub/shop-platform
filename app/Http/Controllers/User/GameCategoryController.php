@@ -27,7 +27,7 @@ class GameCategoryController extends Controller
         }
 
         // Apply filters if any are set
-        if ($request->hasAny(['code', 'price_range', 'status', 'planet', 'registration', 'server'])) {
+        if ($request->hasAny(['code', 'price_range', 'status', 'version', 'login_method', 'team_value_min', 'team_value_max'])) {
             // Filter by code/ID
             if ($request->filled('code')) {
                 $accounts->where('id', $request->code);
@@ -48,19 +48,23 @@ class GameCategoryController extends Controller
                 $accounts->where('status', $request->status);
             }
 
-            // Filter by planet
-            if ($request->filled('planet')) {
-                $accounts->where('planet', $request->planet);
+            // Filter by account version
+            if ($request->filled('version')) {
+                $accounts->where('account_version', $request->version);
             }
 
-            // Filter by registration type
-            if ($request->filled('registration')) {
-                $accounts->where('registration_type', $request->registration);
+            // Filter by login method
+            if ($request->filled('login_method')) {
+                $accounts->where('login_method', 'LIKE', '%' . $request->login_method . '%');
             }
 
-            // Filter by server
-            if ($request->filled('server')) {
-                $accounts->where('server', $request->input('server'));
+            // Filter by team value range
+            if ($request->filled('team_value_min')) {
+                $accounts->where('team_value', '>=', $request->team_value_min);
+            }
+
+            if ($request->filled('team_value_max')) {
+                $accounts->where('team_value', '<=', $request->team_value_max);
             }
 
         }

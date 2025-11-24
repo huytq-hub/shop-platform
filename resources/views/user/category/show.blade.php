@@ -59,35 +59,36 @@
 
                 <div class="account-filter__row">
                     <div class="account-filter__group">
-                        <label for="planet" class="account-filter__label">Hành tinh:</label>
-                        <select id="planet" name="planet" class="account-filter__input account-filter__input--select">
-                            <option value="">Hành tinh</option>
-                            <option value="earth" {{ request('planet') == 'earth' ? 'selected' : '' }}>Trái Đất</option>
-                            <option value="namek" {{ request('planet') == 'namek' ? 'selected' : '' }}>Namek</option>
-                            <option value="xayda" {{ request('planet') == 'xayda' ? 'selected' : '' }}>Xayda</option>
-                        </select>
-                    </div>
-
-                    <div class="account-filter__group">
-                        <label for="registration" class="account-filter__label">Đăng ký:</label>
-                        <select id="registration" name="registration"
-                            class="account-filter__input account-filter__input--select">
-                            <option value="">Đăng ký</option>
-                            <option value="virtual" {{ request('registration') == 'virtual' ? 'selected' : '' }}>Ảo
+                        <label for="version" class="account-filter__label">Bản:</label>
+                        <select id="version" name="version" class="account-filter__input account-filter__input--select">
+                            <option value="">Tất cả</option>
+                            <option value="vietnam" {{ request('version') == 'vietnam' ? 'selected' : '' }}>Bản Việt Nam
                             </option>
-                            <option value="real" {{ request('registration') == 'real' ? 'selected' : '' }}>Thật</option>
+                            <option value="global" {{ request('version') == 'global' ? 'selected' : '' }}>Bản Quốc tế
+                            </option>
                         </select>
                     </div>
 
                     <div class="account-filter__group">
-                        <label for="server" class="account-filter__label">Máy chủ:</label>
-                        <select id="server" name="server" class="account-filter__input account-filter__input--select">
-                            <option value="">Máy chủ</option>
-                            @for ($i = 1; $i <= 13; $i++)
-                                <option value="{{ $i }}" {{ request('server') == $i ? 'selected' : '' }}>Server
-                                    {{ $i }}</option>
-                            @endfor
-                        </select>
+                        <label for="login_method" class="account-filter__label">Hình thức login:</label>
+                        <input type="text" id="login_method" name="login_method"
+                            class="account-filter__input account-filter__input--select"
+                            placeholder="Garena, Facebook, Email..."
+                            value="{{ request('login_method') }}">
+                    </div>
+
+                    <div class="account-filter__group">
+                        <label for="team_value_min" class="account-filter__label">Giá trị đội hình từ:</label>
+                        <input type="number" id="team_value_min" name="team_value_min" min="0"
+                            class="account-filter__input" placeholder="Ví dụ: 10000000"
+                            value="{{ request('team_value_min') }}">
+                    </div>
+
+                    <div class="account-filter__group">
+                        <label for="team_value_max" class="account-filter__label">Đến:</label>
+                        <input type="number" id="team_value_max" name="team_value_max" min="0"
+                            class="account-filter__input" placeholder="Ví dụ: 50000000"
+                            value="{{ request('team_value_max') }}">
                     </div>
                 </div>
 
@@ -116,22 +117,22 @@
                         <div class="account-info">
                             <div class="account-row">
                                 <div class="info-item">
-                                    <span class="info-item__title">Máy chủ:</span>
-                                    <span class="info-value">Server {{ $account->server }}</span>
+                                    <span class="info-item__title">SEVER</span>
+                                    <span class="info-value">{{ display_account_version($account->account_version) }}</span>
                                 </div>
                                 <div class="info-item">
-                                    <span class="info-item__title">Hành tinh:</span>
-                                    <span class="info-value">{{ display_hanh_tinh($account->planet) }}</span>
+                                    <span class="info-item__title">Login:</span>
+                                    <span class="info-value">
+                                        {{ display_login_method($account->login_method) }}
+                                    </span>
                                 </div>
                             </div>
                             <div class="account-row">
                                 <div class="info-item">
-                                    <span class="info-item__title">Đăng ký:</span>
-                                    <span class="info-value">{{ display_dang_ky($account->registration_type) }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-item__title">Bông tai:</span>
-                                    <span class="info-value">{{ $account->earring ? 'Có' : 'Không' }}</span>
+                                    <span class="info-item__title">Giá trị đội hình:</span>
+                                    <span class="info-value">
+                                        {{ display_team_value($account->team_value, 'Chưa cập nhật') }}
+                                    </span>
                                 </div>
                             </div>
                         </div>

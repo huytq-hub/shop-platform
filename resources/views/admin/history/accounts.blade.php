@@ -36,9 +36,9 @@
                                     <th>Người mua</th>
                                     <th>Tài khoản</th>
                                     <th>Danh mục</th>
-                                    <th>Máy chủ</th>
-                                    <th>Hành tinh</th>
-                                    <th>Kiểu đăng ký</th>
+                                    <th>Bản</th>
+                                    <th>Login</th>
+                                    <th>Giá trị đội hình</th>
                                     <th>Giá</th>
                                     <th>Thời gian mua</th>
                                 </tr>
@@ -64,25 +64,9 @@
                                                 <span class="text-danger">Không có</span>
                                             @endif
                                         </td>
-                                        <td>{{ $account->server }}</td>
-                                        <td>
-                                            @if ($account->planet === 'earth')
-                                                <span class="badges bg-lightgreen">Trái Đất</span>
-                                            @elseif ($account->planet === 'namek')
-                                                <span class="badges bg-lightblue">Namek</span>
-                                            @elseif ($account->planet === 'xayda')
-                                                <span class="badges bg-lightred">Xayda</span>
-                                            @else
-                                                <span class="badges">{{ $account->planet }}</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if ($account->registration_type === 'real')
-                                                <span class="badges bg-lightgreen">Thật</span>
-                                            @else
-                                                <span class="badges bg-lightyellow">Ảo</span>
-                                            @endif
-                                        </td>
+                                        <td>{{ display_account_version($account->account_version) }}</td>
+                                        <td>{{ display_login_method($account->login_method) }}</td>
+                                        <td>{{ display_team_value($account->team_value) }}</td>
                                         <td>{{ number_format($account->price) }} đ</td>
                                         <td>{{ $account->updated_at->format('d/m/Y H:i:s') }}</td>
                                     </tr>

@@ -85,6 +85,67 @@ function display_dang_ky($planet)
     };
 }
 
+function display_account_version($server)
+{
+    if ($server === null || $server === '') {
+        return 'Đang cập nhật';
+    }
+
+    $value = strtolower((string) $server);
+
+    $globalValues = ['global', 'quoc-te', 'quoc te', 'qt', 'quocte', 'international', 'inter'];
+    $vietnamValues = ['viet-nam', 'viet nam', 'vietnam', 'vn', 'vi'];
+
+    if (is_numeric($server)) {
+        return (int) $server === 1
+            ? 'Bản Việt Nam'
+            : ((int) $server === 2 ? 'Bản Quốc tế' : 'Server ' . $server);
+    }
+
+    if (in_array($value, $globalValues, true)) {
+        return 'Bản Quốc tế';
+    }
+
+    if (in_array($value, $vietnamValues, true)) {
+        return 'Bản Việt Nam';
+    }
+
+    return ucfirst($value);
+}
+
+function display_login_method($method, $fallback = 'Đang cập nhật')
+{
+    if (empty($method)) {
+        return $fallback;
+    }
+
+    return match (strtolower($method)) {
+        'garena' => 'Garena',
+        'facebook' => 'Facebook',
+        'google' => 'Google',
+        'apple' => 'Apple ID',
+        'ea' => 'EA ID',
+        'email' => 'Email/Số điện thoại',
+        'guest' => 'Khách/Guest',
+        'virtual' => 'Tài khoản ảo',
+        'real' => 'Tài khoản thật',
+        default => ucfirst($method),
+    };
+}
+
+function display_team_value($value, $fallback = 'Đang cập nhật')
+{
+    if ($value === null || $value === '') {
+        return $fallback;
+    }
+
+    if (is_numeric($value)) {
+        return number_format((float) $value) . ' BP';
+    }
+
+    return $value;
+}
+
 if (!function_exists('config_get')) {
     /**
      * Lấy giá trị cấu hình theo khóa
