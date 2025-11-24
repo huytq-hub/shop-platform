@@ -36,23 +36,23 @@
                 <div class="detail__info">
                     <div class="detail__info-row">
                         <div class="detail__info-item">
-                            <span class="detail__info-label">MÁY CHỦ:</span>
-                            <span class="detail__info-value">Server {{ $account->server }}</span>
+                            <span class="detail__info-label">SEVER</span>
+                            <span class="detail__info-value">{{ display_account_version($account->account_version) }}</span>
                         </div>
                         <div class="detail__info-item">
-                            <span class="detail__info-label">HÀNH TINH:</span>
-                            <span class="detail__info-value">{{ display_hanh_tinh($account->planet) }}</span>
+                            <span class="detail__info-label">HÌNH THỨC LOGIN ACC:</span>
+                            <span class="detail__info-value">
+                                {{ display_login_method($account->login_method) }}
+                            </span>
                         </div>
                     </div>
 
                     <div class="detail__info-row">
                         <div class="detail__info-item">
-                            <span class="detail__info-label">ĐĂNG KÝ:</span>
-                            <span class="detail__info-value">{{ display_dang_ky($account->registration_type) }}</span>
-                        </div>
-                        <div class="detail__info-item">
-                            <span class="detail__info-label">BÔNG TAI:</span>
-                            <span class="detail__info-value">{{ $account->earring ? 'Có' : 'Không' }}</span>
+                            <span class="detail__info-label">GIÁ TRỊ ĐỘI HÌNH:</span>
+                            <span class="detail__info-value">
+                                {{ display_team_value($account->team_value) }}
+                            </span>
                         </div>
                     </div>
 
@@ -68,7 +68,7 @@
 
                 <!-- Account Images -->
                 <div class="detail__images">
-                    <h2 class="detail__images-title">Hình ảnh chi tiết của tài khoản Ngọc rồng Online <span
+                    <h2 class="detail__images-title">Hình ảnh chi tiết của tài khoản FC Mobile <span
                             class="text-danger">#{{ $account->id }}</span>
                     </h2>
                     <div class="detail__images-list">

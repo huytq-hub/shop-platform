@@ -47,9 +47,9 @@
                                     <th>Tên tài khoản</th>
                                     <th>Giá tiền</th>
                                     <th>Trạng thái</th>
-                                    <th>Máy chủ</th>
-                                    <th>Loại đăng ký</th>
-                                    <th>Hành tinh</th>
+                                    <th>Bản</th>
+                                    <th>Login</th>
+                                    <th>Giá trị đội hình</th>
                                     <th>Ảnh đại diện</th>
                                     <th>Thao tác</th>
                                 </tr>
@@ -76,18 +76,9 @@
                                                 {{ $account->status === 'available' ? 'Chưa bán' : 'Đã bán' }}
                                             </span>
                                         </td>
-                                        <td>Server {{ $account->server }}</td>
-                                        <td>{{ $account->registration_type === 'real' ? 'Thật' : 'Ảo' }}</td>
-                                        <td>
-                                            @php
-                                                $planetNames = [
-                                                    'earth' => 'Trái Đất',
-                                                    'namek' => 'Namek',
-                                                    'xayda' => 'Xayda',
-                                                ];
-                                            @endphp
-                                            {{ $planetNames[$account->planet] }}
-                                        </td>
+                                        <td>{{ display_account_version($account->account_version) }}</td>
+                                        <td>{{ display_login_method($account->login_method ?? '') }}</td>
+                                        <td>{{ display_team_value($account->team_value) }}</td>
                                         <td>
                                             <img src="{{ asset($account->thumb) }}" alt="{{ $account->account_name }}"
                                                 class="img-thumbnail" style="max-width: 100px;">

@@ -124,8 +124,44 @@ php artisan pint        # Chuẩn hóa coding style
 - Viết test/seed kèm theo khi chạm tới nghiệp vụ giao dịch.
 - Gửi pull request với mô tả rõ ràng, screenshot (nếu thay đổi UI).
 - Báo cáo lỗi hoặc đề xuất tính năng qua Issues, ưu tiên mô tả rõ bối cảnh và log liên quan.
+- Ghi lại thay đổi vào `UPDATES.md` để đội vận hành nắm rõ mỗi lần fix.
 
-## 9. Liên hệ & bản quyền
+## 9. Lược đồ tài khoản FC Mobile (2025-11)
+
+Sau khi chuyển đổi từ dữ liệu Ngọc Rồng sang FC Mobile, bảng `game_accounts` hiện dùng 3 trường cốt lõi thay cho `server/planet/registration_type/earring`:
+
+| Trường mới | Kiểu | Mô tả |
+|-----------|------|-------|
+| `account_version` | enum(`vietnam`,`global`) | Phân biệt “Bản Việt Nam” và “Bản Quốc tế” (hiển thị trong UI bằng helper `display_account_version()`). |
+| `login_method` | string | Hình thức đăng nhập như Garena, Facebook, Email, EA ID… (được render bởi `display_login_method()`). |
+| `team_value` | unsigned bigint, nullable | Giá trị đội hình (BP), dùng để xếp loại acc và lọc nâng cao (`display_team_value()`). |
+
+### 9.1 Nâng cấp cơ sở dữ liệu hiện có
+
+1. Kéo code mới nhất và chạy:
+   ```bash
+   php artisan migrate
+   ```
+   Migration `2025_11_24_000001_update_game_accounts_for_fc_mobile.php` sẽ thêm các cột mới và loại bỏ trường cũ.
+2. Nếu đang dùng dump `shopaccgamev1.sql`, hãy import dump đó **trước**, sau đó chạy lại migrate để đồng bộ schema.
+3. Cập nhật dữ liệu hiện hữu:
+   - `account_version`: đặt `vietnam` cho acc server VN, `global` cho bản quốc tế.
+   - `login_method`: ghi rõ chuỗi login thực tế (ví dụ `Garena`, `Facebook`…).
+   - `team_value`: nhập số BP (ví dụ `120000000`). Có thể để trống nếu chưa biết.
+4. Seeder `GameAccountSeeder` đã được điều chỉnh để tạo dữ liệu mẫu đúng định dạng mới. Có thể chạy lại:
+   ```bash
+   php artisan db:seed --class=GameAccountSeeder
+   ```
+
+### 9.2 Ảnh hưởng tới giao diện & filter
+
+- Trang admin (tạo/sửa/index tài khoản) và trang người dùng (danh sách + chi tiết) đã hiển thị 3 trường này.
+- Bộ lọc danh mục cho phép lọc theo “Bản”, từ khóa “Login” và khoảng “Giá trị đội hình”.
+- Các helper mới nằm trong `app/helpers.php`, dùng chung ở mọi view.
+
+Nếu tự chỉnh sửa giao diện hoặc API khác, hãy đảm bảo đọc/ghi đúng 3 field này để tránh lỗi hiển thị.
+
+## 10. Liên hệ & bản quyền
 
 - Tác giả gốc: Phạm Hoàng Tuấn – FPT University (2025).
 - Liên hệ hỗ trợ shop: cập nhật trong phần cấu hình (`App\\Helpers\\ConfigHelper`).

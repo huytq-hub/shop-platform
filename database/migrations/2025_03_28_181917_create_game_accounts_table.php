@@ -24,10 +24,9 @@ return new class extends Migration {
             $table->string('password'); // Mật khẩu tài khoản
             $table->bigInteger('price')->unsigned(); // Giá tiền (>0)
             $table->enum('status', ['available', 'sold'])->default('available'); // Trạng thái
-            $table->integer('server'); // Máy chủ (1-13 hoặc tên)
-            $table->enum('registration_type', ['virtual', 'real']); // Đăng ký (Ảo/Thật)
-            $table->enum('planet', ['earth', 'namek', 'xayda']); // Hành tinh
-            $table->boolean('earring')->default(false);
+            $table->enum('account_version', ['vietnam', 'global'])->default('vietnam'); // Bản phát hành
+            $table->string('login_method')->nullable(); // Hình thức đăng nhập (Garena, Facebook,...)
+            $table->unsignedBigInteger('team_value')->nullable(); // Giá trị đội hình (BP)
             $table->foreignId('buyer_id')->nullable()->constrained('users')->nullOnDelete()->cascadeOnDelete(); // Người mua (FK users)
             $table->text('note')->nullable(); // Ghi chú (Nếu có)
             $table->text('thumb'); // List of images

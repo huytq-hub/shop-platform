@@ -21,10 +21,9 @@ class GameAccount extends Model
         'password',
         'price',
         'status',
-        'server',
-        'registration_type',
-        'planet',
-        'earring',
+        'account_version',
+        'login_method',
+        'team_value',
         'note',
         'thumb',
         'images'

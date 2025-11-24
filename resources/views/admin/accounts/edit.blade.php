@@ -88,60 +88,40 @@
                             </div>
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>Máy chủ <span class="text-danger">*</span></label>
-                                    <input type="number" name="server" value="{{ old('server', $account->server) }}"
-                                        class="form-control @error('server') is-invalid @enderror">
-                                    @error('server')
+                                    <label>Bản phát hành <span class="text-danger">*</span></label>
+                                    <select name="account_version"
+                                        class="select @error('account_version') is-invalid @enderror">
+                                        <option value="vietnam"
+                                            {{ old('account_version', $account->account_version) == 'vietnam' ? 'selected' : '' }}>
+                                            Bản Việt Nam</option>
+                                        <option value="global"
+                                            {{ old('account_version', $account->account_version) == 'global' ? 'selected' : '' }}>
+                                            Bản Quốc tế</option>
+                                    </select>
+                                    @error('account_version')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>Loại đăng ký</label>
-                                    <select name="registration_type"
-                                        class="select @error('registration_type') is-invalid @enderror">
-                                        <option value="virtual"
-                                            {{ old('registration_type', $account->registration_type) == 'virtual' ? 'selected' : '' }}>
-                                            Ảo</option>
-                                        <option value="real"
-                                            {{ old('registration_type', $account->registration_type) == 'real' ? 'selected' : '' }}>
-                                            Thật</option>
-                                    </select>
-                                    @error('registration_type')
+                                    <label>Hình thức login acc <span class="text-danger">*</span></label>
+                                    <input type="text" name="login_method"
+                                        value="{{ old('login_method', $account->login_method) }}"
+                                        class="form-control @error('login_method') is-invalid @enderror"
+                                        placeholder="Garena / Facebook / Email...">
+                                    @error('login_method')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>Hành tinh</label>
-                                    <select name="planet" class="select @error('planet') is-invalid @enderror">
-                                        <option value="earth"
-                                            {{ old('planet', $account->planet) == 'earth' ? 'selected' : '' }}>Trái đất
-                                        </option>
-                                        <option value="namek"
-                                            {{ old('planet', $account->planet) == 'namek' ? 'selected' : '' }}>Namek
-                                        </option>
-                                        <option value="xayda"
-                                            {{ old('planet', $account->planet) == 'xayda' ? 'selected' : '' }}>Xayda
-                                        </option>
-                                    </select>
-                                    @error('planet')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Bông tai</label>
-                                    <select name="earring" class="select @error('earring') is-invalid @enderror">
-                                        <option value="1"
-                                            {{ old('earring', $account->earring) == 1 ? 'selected' : '' }}>Có</option>
-                                        <option value="0"
-                                            {{ old('earring', $account->earring) == 0 ? 'selected' : '' }}>Không</option>
-                                    </select>
-                                    @error('earring')
+                                    <label>Giá trị đội hình (BP)</label>
+                                    <input type="number" name="team_value" value="{{ old('team_value', $account->team_value) }}"
+                                        class="form-control @error('team_value') is-invalid @enderror" min="0"
+                                        placeholder="Ví dụ: 120000000">
+                                    @error('team_value')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
