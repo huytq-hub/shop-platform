@@ -13,12 +13,17 @@ use App\Models\Category;
 use App\Models\GameAccount;
 use App\Models\GameCategory;
 use Illuminate\Http\Request;
+use App\Models\WhiteAccount;
 
 class GameCategoryController extends Controller
 {
     public function index(string $slug, Request $request)
     {
         $category = GameCategory::where("slug", $slug)->firstOrFail();
+
+        if ($category->type === 'white_accounts') {
+            return redirect()->route('white-accounts.index');
+        }
 
         // Get all accounts linked to this category
         $accounts = GameAccount::where('game_category_id', $category->id);
@@ -76,17 +81,23 @@ class GameCategoryController extends Controller
     {
         $title = 'Danh mục bán nick game';
 
-        // Get all categories with additional statistics
         $categories = Category::where('active', 1)->get();
 
-        foreach ($categories as $category) {
-            // Total accounts in this category
-            $category->allAccount = GameAccount::where('game_category_id', $category->id)->count();
+        $whiteStats = [
+            'available' => WhiteAccount::where('status', 'available')->count(),
+            'sold' => WhiteAccount::where('status', 'sold')->count(),
+        ];
 
-            // Sold accounts in this category
-            $category->soldCount = GameAccount::where('game_category_id', $category->id)
-                ->where('status', 'sold')
-                ->count();
+        foreach ($categories as $category) {
+            if (($category->type ?? 'standard') === 'white_accounts') {
+                $category->allAccount = $whiteStats['available'];
+                $category->soldCount = $whiteStats['sold'];
+            } else {
+                $category->allAccount = GameAccount::where('game_category_id', $category->id)->count();
+                $category->soldCount = GameAccount::where('game_category_id', $category->id)
+                    ->where('status', 'sold')
+                    ->count();
+            }
         }
 
         return view('user.category.show-all', compact('categories', 'title'));

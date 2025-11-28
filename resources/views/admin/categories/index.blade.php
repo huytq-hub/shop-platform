@@ -46,6 +46,7 @@
                                     <th>ID</th>
                                     <th>Tên danh mục</th>
                                     <th>Ảnh đại diện</th>
+                                    <th>Loại</th>
                                     <th>Trạng thái</th>
                                     <th>Ngày tạo</th>
                                     <th>Thao tác</th>
@@ -65,6 +66,11 @@
                                         <td>
                                             <img src="{{ asset($category->thumbnail) }}" alt="{{ $category->name }}"
                                                 class="img-thumbnail" style="max-width: 200px;">
+                                        </td>
+                                        <td>
+                                            <span class="badges {{ $category->type === 'white_accounts' ? 'bg-lightpurple' : 'bg-lightgrey' }}">
+                                                {{ $category->type === 'white_accounts' ? 'Acc trắng' : 'Chuẩn' }}
+                                            </span>
                                         </td>
                                         <td><span
                                                 class="badges {{ $category->active ? 'bg-lightgreen' : 'bg-lightred' }}">{{ $category->active ? 'Hoạt động' : 'Đã ẩn' }}</span>

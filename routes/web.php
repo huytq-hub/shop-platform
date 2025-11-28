@@ -20,6 +20,7 @@ use App\Http\Controllers\User\ServiceOrderController;
 use App\Http\Controllers\User\RandomCategoryController;
 use App\Http\Controllers\User\RandomAccountController;
 use App\Http\Controllers\User\WithdrawalController;
+use App\Http\Controllers\User\WhiteAccountController as UserWhiteAccountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,6 +49,7 @@ Route::middleware('auth')->group(function () {
 
         // Đổi lại thành random
         Route::get('/purchased-random-accounts', [ProfileController::class, 'purchasedRandomAccounts'])->name('purchased-random-accounts');
+        Route::get('/white-accounts', [ProfileController::class, 'purchasedWhiteAccounts'])->name('white-accounts');
 
        
         Route::get('/deposit/card', [ProfileController::class, 'depositCard'])->name('deposit-card');
@@ -96,6 +98,13 @@ Route::prefix('random')->name('random.')->group(function () {
     Route::get('/account/{id}', [RandomAccountController::class, 'show'])->name('account.show');
     Route::post('/account/{id}/purchase', [RandomAccountController::class, 'purchase'])->name('account.purchase');
     Route::get('/{slug}', [RandomCategoryController::class, 'index'])->name('index');
+});
+
+Route::prefix('white-accounts')->name('white-accounts.')->group(function () {
+    Route::get('/', [UserWhiteAccountController::class, 'index'])->name('index');
+    Route::post('/batch/{batch}/purchase', [UserWhiteAccountController::class, 'purchase'])
+        ->middleware('auth')
+        ->name('purchase');
 });
 
 // Routes for lucky wheel categories

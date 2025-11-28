@@ -19,6 +19,7 @@ class Category extends Model
         'name',
         'thumbnail',
         'description',
-        'active'
+        'active',
+        'type'
     ];
 }

@@ -18,6 +18,7 @@ use App\Models\GameAccount;
 use App\Models\MoneyTransaction;
 use App\Models\RandomCategoryAccount;
 use App\Models\ServiceHistory;  // Fix the import here
+use App\Models\WhiteAccountPurchase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -156,6 +157,20 @@ class ProfileController extends Controller
             'user' => $request->user(),
             'transactions' => $transactions,
             'title' => $title
+        ]);
+    }
+
+    public function purchasedWhiteAccounts(Request $request)
+    {
+        $title = 'Acc trắng đã mua';
+        $purchases = WhiteAccountPurchase::where('user_id', Auth::id())
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
+        return view('user.profile.purchased-white-accounts', [
+            'user' => $request->user(),
+            'purchases' => $purchases,
+            'title' => $title,
         ]);
     }
 

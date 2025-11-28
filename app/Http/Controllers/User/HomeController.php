@@ -19,6 +19,7 @@ use App\Models\RandomCategory;
 use App\Models\RandomCategoryAccount;
 use App\Models\MoneyTransaction;
 use App\Models\Notification;
+use App\Models\WhiteAccount;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -27,13 +28,28 @@ class HomeController extends Controller
     //
     public function index()
     {
-        // Dang mục bán acc game
         $categories = Category::where('active', 1)->orderBy('updated_at', 'desc')->get();
+
+        $whiteStats = [
+            'available' => WhiteAccount::where('status', 'available')->count(),
+            'sold' => WhiteAccount::where('status', 'sold')->count(),
+            'min_price' => WhiteAccount::join('white_account_batches as wab', 'white_accounts.batch_id', '=', 'wab.id')
+                ->where('white_accounts.status', 'available')
+                ->selectRaw('MIN(COALESCE(white_accounts.unit_price, wab.default_price)) as price')
+                ->value('price'),
+        ];
+
         foreach ($categories as $category) {
-            $category->soldCount = GameAccount::where('game_category_id', $category->id)
-                ->where('status', 'sold')
-                ->count();
-            $category->allAccount = GameAccount::where('game_category_id', $category->id)->count();
+            if ($category->type === 'white_accounts') {
+                $category->allAccount = $whiteStats['available'];
+                $category->soldCount = $whiteStats['sold'];
+                $category->white_min_price = $whiteStats['min_price'];
+            } else {
+                $category->soldCount = GameAccount::where('game_category_id', $category->id)
+                    ->where('status', 'sold')
+                    ->count();
+                $category->allAccount = GameAccount::where('game_category_id', $category->id)->count();
+            }
         }
 
         // Dịch vụ cày thuê

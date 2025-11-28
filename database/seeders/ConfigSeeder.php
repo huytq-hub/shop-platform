@@ -68,6 +68,9 @@ class ConfigSeeder extends Seeder
             'payment.card.discount_percent' => '20',
             'payment.bank.active' => '1',
             'payment.momo.active' => '1',
+            'white_account.max_per_order' => '20',
+            'white_account.min_per_order' => '1',
+
             // Login social settings (stored as JSON)
             'login_social.google.active' => '1',
             'login_social.google.client_id' => env('LOGIN_SOCIAL_GOOGLE_CLIENT_ID', ''),
