@@ -142,14 +142,39 @@
             </header>
             <div class="category__list">
                 @foreach ($categories as $category)
-                    <a href="{{ route('category.index', ['slug' => $category->slug]) }}" class="category__item">
+                    @php
+                        $isWhiteCategory = ($category->type ?? 'standard') === 'white_accounts';
+                        $categoryLink = $isWhiteCategory
+                            ? route('white-accounts.index')
+                            : route('category.index', ['slug' => $category->slug]);
+                    @endphp
+                    <a href="{{ $categoryLink }}"
+                        class="category__item {{ $isWhiteCategory ? 'category__item--white' : '' }}">
+                        <!-- @if ($isWhiteCategory)
+                            <div class="category__white-ribbon">ACC TRẮNG</div>
+                        @endif -->
                         <img src="{{ $category->thumbnail }}" alt="{{ $category->name }}" class="category__img" />
                         <h2 class="category__title">{{ $category->name }}</h2>
+                        <p class="category__desc">
+                            {{ \Illuminate\Support\Str::limit(strip_tags($category->description), 90) }}
+                        </p>
                         <div class="category__stats">
-                            <span class="badge">{{ number_format($category->allAccount) }} Tài khoản</span>
-                            <span class="badge">Đã bán: {{ number_format($category->soldCount) }}</span>
+                            <span class="badge">
+                                @if ($isWhiteCategory)
+                                    Còn: {{ number_format($category->allAccount) }} nick
+                                @else
+                                    {{ number_format($category->allAccount) }} Tài khoản
+                                @endif
+                            </span>
+                            <span class="badge">
+                                @if ($isWhiteCategory)
+                                    Giá từ: {{ $category->white_min_price ? number_format($category->white_min_price) . 'đ' : 'Đang cập nhật' }}
+                                @else
+                                    Đã bán: {{ number_format($category->soldCount) }}
+                                @endif
+                            </span>
                         </div>
-                        <p class="category__action">XEM CHI TIẾT</p>
+                        <p class="category__action">{{ $isWhiteCategory ? 'MUA ACC TRẮNG' : 'XEM CHI TIẾT' }}</p>
                     </a>
                 @endforeach
             </div>
@@ -319,6 +344,46 @@
             color: #4caf50;
             font-weight: bold;
             margin-left: 5px;
+        }
+
+        .category__item {
+            position: relative;
+        }
+
+        .category__item--white {
+            border: 2px solid rgba(79, 195, 247, 0.4);
+            box-shadow: 0 10px 25px rgba(79, 195, 247, 0.15);
+        }
+
+        .category__item--white .category__title {
+            color: #1b1f3b;
+        }
+
+        .category__item--white .category__img {
+            border-radius: 12px;
+        }
+
+        .category__desc {
+            color: #77829c;
+            font-size: 14px;
+            margin: 8px 0 12px;
+        }
+
+        .category__item--white .category__desc {
+            color: #1f254c;
+        }
+
+        .category__white-ribbon {
+            position: absolute;
+            top: 10px;
+            left: -6px;
+            background: linear-gradient(90deg, #ffd54f, #ffa000);
+            color: #0d0f1f;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
     </style>
 @endpush

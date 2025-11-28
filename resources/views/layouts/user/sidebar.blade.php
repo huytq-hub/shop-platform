@@ -64,6 +64,11 @@
                 <i class="fa-solid fa-box"></i> Tài khoản đã mua
             </a>
         </li>
+        <li class="sidebar-item {{ request()->routeIs('profile.white-accounts') ? 'active' : '' }}">
+            <a href="{{ route('profile.white-accounts') }}" class="sidebar-link">
+                <i class="fa-solid fa-user-secret"></i> Acc trắng đã mua
+            </a>
+        </li>
         <li class="sidebar-item {{ request()->routeIs('profile.purchased-random-accounts') ? 'active' : '' }}">
             <a href="{{ route('profile.purchased-random-accounts') }}" class="sidebar-link">
                 <i class="fa-solid fa-dice"></i> Random đã mua

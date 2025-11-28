@@ -44,13 +44,15 @@ class GameCategoryController extends Controller
                 'name' => 'required|string|unique:game_categories,name',
                 'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif',
                 'description' => 'required|string',
-                'active' => 'boolean'
+                'status' => 'nullable|boolean',
+                'type' => 'required|in:standard,white_accounts',
             ]);
 
             DB::beginTransaction();
 
-            $data = $request->all();
+            $data = $request->only(['name', 'description', 'type']);
             $data['slug'] = Str::slug($request->name);
+            $data['active'] = $request->boolean('status', true);
 
             if ($request->hasFile('thumbnail')) {
                 $data['thumbnail'] = UploadHelper::upload($request->file('thumbnail'), self::UPLOAD_DIR);
@@ -85,13 +87,15 @@ class GameCategoryController extends Controller
                 'name' => 'required|string|unique:game_categories,name,' . $category->id,
                 'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif',
                 'description' => 'nullable|string',
-                'active' => 'boolean'
+                'status' => 'nullable|boolean',
+                'type' => 'required|in:standard,white_accounts',
             ]);
 
             DB::beginTransaction();
 
-            $data = $request->all();
+            $data = $request->only(['name', 'description', 'type']);
             $data['slug'] = Str::slug($request->name);
+            $data['active'] = $request->boolean('status', true);
 
             if ($request->hasFile('thumbnail')) {
                 // Delete old thumbnail if exists

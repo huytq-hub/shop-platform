@@ -20,7 +20,8 @@ class GameCategory extends Model
         'slug',
         'thumbnail',
         'description',
-        'active'
+        'active',
+        'type'
     ];
 
     protected $casts = [

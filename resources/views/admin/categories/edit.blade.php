@@ -70,6 +70,24 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="col-lg-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Loại danh mục</label>
+                                    <select name="type" class="select @error('type') is-invalid @enderror">
+                                        <option value="standard"
+                                            {{ old('type', $category->type ?? 'standard') == 'standard' ? 'selected' : '' }}>
+                                            Danh mục acc thường
+                                        </option>
+                                        <option value="white_accounts"
+                                            {{ old('type', $category->type ?? 'standard') == 'white_accounts' ? 'selected' : '' }}>
+                                            Acc trắng (chỉ user/pass)
+                                        </option>
+                                    </select>
+                                    @error('type')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                             <x-preview-image />
                             <div class="col-lg-12 ">
                                 <div class="form-group">

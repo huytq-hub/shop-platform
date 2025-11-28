@@ -22,6 +22,8 @@ use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\MoneyWithdrawalController;
 use App\Http\Controllers\Admin\ResourceWithdrawalController;
 use App\Http\Controllers\Admin\LuckyWheelController;
+use App\Http\Controllers\Admin\WhiteAccountBatchController;
+use App\Http\Controllers\Admin\WhiteAccountController;
 
 Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
     Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('index');
@@ -78,6 +80,21 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
         Route::get('/edit/{account}', [GameAccountController::class, 'edit'])->name('edit');
         Route::put('/update/{account}', [GameAccountController::class, 'update'])->name('update');
         Route::delete('/delete/{account}', [GameAccountController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('white-account-batches')->name('white-account-batches.')->group(function () {
+        Route::get('/', [WhiteAccountBatchController::class, 'index'])->name('index');
+        Route::post('/', [WhiteAccountBatchController::class, 'store'])->name('store');
+        Route::get('/{batch}/edit', [WhiteAccountBatchController::class, 'edit'])->name('edit');
+        Route::put('/{batch}', [WhiteAccountBatchController::class, 'update'])->name('update');
+        Route::delete('/{batch}', [WhiteAccountBatchController::class, 'destroy'])->name('destroy');
+        Route::post('/{batch}/toggle', [WhiteAccountBatchController::class, 'quickToggle'])->name('toggle');
+    });
+
+    Route::prefix('white-accounts')->name('white-accounts.')->group(function () {
+        Route::get('/', [WhiteAccountController::class, 'index'])->name('index');
+        Route::post('/import', [WhiteAccountController::class, 'import'])->name('import');
+        Route::delete('/{whiteAccount}', [WhiteAccountController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('services')->name('services.')->group(function () {

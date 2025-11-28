@@ -111,6 +111,19 @@
 
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('assets/img/icons/product.svg') }}"
+                            alt="img"><span>Acc trắng Garena</span><span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="{{ route('admin.white-account-batches.index') }}"
+                                class="{{ request()->routeIs('admin.white-account-batches.*') ? 'active' : '' }}">Quản lý
+                                lô</a></li>
+                        <li><a href="{{ route('admin.white-accounts.index') }}"
+                                class="{{ request()->routeIs('admin.white-accounts.*') ? 'active' : '' }}">Kho & Import</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="submenu">
+                    <a href="javascript:void(0);"><img src="{{ asset('assets/img/icons/product.svg') }}"
                             alt="img"><span>Vòng quay may mắn</span><span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('admin.lucky-wheels.index') }}"
