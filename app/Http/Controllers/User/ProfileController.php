@@ -95,10 +95,14 @@ class ProfileController extends Controller
     public function purchasedAccounts(Request $request)
     {
         $title = 'Tài khoản đã mua';
-        $transactions = GameAccount::where('buyer_id', Auth::id())->where('status', 'sold')->paginate(perPage: 10);
+        $gameAccounts = GameAccount::where('buyer_id', Auth::id())->where('status', 'sold')->paginate(perPage: 10);
+        $whiteAccountPurchases = \App\Models\WhiteAccountPurchase::where('user_id', Auth::id())
+            ->orderByDesc('created_at')
+            ->get();
         return view('user.profile.purchased-accounts', [
             'user' => $request->user(),
-            'transactions' => $transactions,
+            'transactions' => $gameAccounts,
+            'whitePurchases' => $whiteAccountPurchases,
             'title' => $title
         ]);
     }

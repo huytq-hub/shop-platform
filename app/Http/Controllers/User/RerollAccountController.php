@@ -141,8 +141,8 @@ class RerollAccountController extends Controller
 
             DB::commit();
 
-            return redirect()->route('profile.white-accounts')
-                ->with('success', 'Mua acc reroll thành công! Kiểm tra danh sách bàn giao trong mục "Acc trắng đã mua".');
+            return redirect()->route('profile.purchased-accounts')
+                ->with('success', 'Mua acc reroll thành công! Kiểm tra danh sách bàn giao trong mục "Tài khoản đã mua".');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->with('error', 'Không thể hoàn tất giao dịch: ' . $th->getMessage());

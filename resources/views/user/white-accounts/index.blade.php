@@ -24,7 +24,7 @@
                 <i class="fas fa-info-circle"></i>
                 <div>
                     <strong>Giao hàng ngay:</strong> Sau khi thanh toán, tài khoản sẽ hiển thị trong mục 
-                    <a href="{{ route('profile.white-accounts') }}">Acc trắng đã mua</a>
+                    <a href="{{ route('profile.purchased-accounts') }}">Acc trắng đã mua</a>
                 </div>
             </div>
             <div class="info-card">
@@ -215,27 +215,29 @@
         }
 
         .info-card strong {
-            color: #fff;
+            color: #0277bd;
             display: block;
-            margin-bottom: 6px;
-            font-size: 15px;
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 700;
         }
 
         .info-card div {
-            color: #b8c5d6;
-            font-size: 14px;
-            line-height: 1.6;
+            color: #37474f;
+            font-size: 15px;
+            line-height: 1.7;
+            font-weight: 400;
         }
 
         .info-card a {
-            color: #00bcd4;
+            color: #00838f;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
             transition: color 0.2s;
         }
 
         .info-card a:hover {
-            color: #4fc3f7;
+            color: #00acc1;
             text-decoration: underline;
         }
 
@@ -255,6 +257,8 @@
             overflow: hidden;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         }
+        
+        /* Đảm bảo form và buttons có z-index cao hơn pseudo-elements */
 
         .white-batch-card::before {
             content: '';
@@ -266,6 +270,8 @@
             background: linear-gradient(90deg, #00bcd4 0%, #4fc3f7 100%);
             opacity: 0;
             transition: opacity 0.4s;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .white-batch-card::after {
@@ -278,6 +284,8 @@
             background: radial-gradient(circle, rgba(0, 188, 212, 0.1) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.4s;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .white-batch-card:hover {
@@ -440,6 +448,18 @@
 
         .white-batch-card__form {
             margin-top: auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .quantity-input-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .qty-btn {
+            position: relative;
+            z-index: 2;
         }
 
         .form-group {
@@ -662,27 +682,163 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Quantity input controls
-            document.querySelectorAll('.qty-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const targetId = this.dataset.target;
-                    const input = document.getElementById(targetId);
-                    if (!input || input.disabled) return;
-
-                    const current = parseInt(input.value) || 0;
-                    const min = parseInt(input.min) || 1;
-                    const max = parseInt(input.max) || 20;
-                    const isPlus = this.classList.contains('qty-plus');
-
-                    if (isPlus && current < max) {
-                        input.value = current + 1;
-                    } else if (!isPlus && current > min) {
-                        input.value = current - 1;
+        (function() {
+            'use strict';
+            
+            function initWhiteAccounts() {
+                var buttons = document.querySelectorAll('.qty-btn');
+                var forms = document.querySelectorAll('form.white-batch-card__form');
+                
+                // Function để xử lý click button
+                function handleQtyButtonClick(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    
+                    var btn = this;
+                    var targetId = btn.getAttribute('data-target');
+                    
+                    if (!targetId) {
+                        return false;
                     }
+                    
+                    var input = document.getElementById(targetId);
+                    
+                    if (!input || input.disabled) {
+                        return false;
+                    }
+
+                    var current = parseInt(input.value) || parseInt(input.getAttribute('min')) || 1;
+                    var min = parseInt(input.getAttribute('min')) || 1;
+                    var max = parseInt(input.getAttribute('max')) || 999;
+                    var isPlus = btn.classList.contains('qty-plus');
+
+                    var newValue = current;
+                    if (isPlus && current < max) {
+                        newValue = current + 1;
+                    } else if (!isPlus && current > min) {
+                        newValue = current - 1;
+                    }
+
+                    if (newValue !== current) {
+                        input.value = newValue;
+                        var changeEvent = new Event('change', { bubbles: true });
+                        input.dispatchEvent(changeEvent);
+                    }
+                    
+                    return false;
+                }
+                
+                // Bind với vanilla JS
+                buttons.forEach(function(btn) {
+                    btn.removeEventListener('click', handleQtyButtonClick, true);
+                    btn.removeEventListener('click', handleQtyButtonClick, false);
+                    btn.addEventListener('click', handleQtyButtonClick, true);
+                    btn.addEventListener('click', handleQtyButtonClick, false);
                 });
-            });
-        });
+                
+                // Backup với jQuery
+                if (typeof jQuery !== 'undefined') {
+                    jQuery(document).off('click.whiteaccounts', '.qty-btn').on('click.whiteaccounts', '.qty-btn', function(e) {
+                        return handleQtyButtonClick.call(this, e);
+                    });
+                }
+                
+                // Real-time validation on input change - cho phép xóa để nhập mới
+                document.addEventListener('change', function(e) {
+                    if (e.target && e.target.name === 'quantity' && e.target.type === 'number') {
+                        var input = e.target;
+                        var value = parseInt(input.value);
+                        
+                        // Chỉ validate nếu có giá trị, cho phép rỗng để người dùng nhập
+                        if (!isNaN(value)) {
+                            var min = parseInt(input.getAttribute('min')) || 1;
+                            var max = parseInt(input.getAttribute('max')) || 999;
+
+                            if (value < min) {
+                                input.value = min;
+                            } else if (value > max) {
+                                input.value = max;
+                            }
+                        }
+                    }
+                }, true);
+
+                // Cho phép xóa input - không force set giá trị khi đang nhập
+                document.addEventListener('input', function(e) {
+                    if (e.target && e.target.name === 'quantity' && e.target.type === 'number') {
+                        var input = e.target;
+                        var value = input.value;
+                        
+                        // Chỉ validate nếu có giá trị và không phải đang xóa (rỗng hoặc chỉ có dấu -)
+                        if (value !== '' && value !== '-') {
+                            var numValue = parseInt(value);
+                            if (isNaN(numValue) || numValue < 0) {
+                                // Chỉ set về min nếu người dùng nhập số âm hoặc không hợp lệ
+                                // Không set nếu đang xóa
+                                var min = parseInt(input.getAttribute('min')) || 1;
+                                input.value = min;
+                            }
+                        }
+                    }
+                }, true);
+
+                // Validate quantity on form submit
+                forms.forEach(function(form) {
+                    form.addEventListener('submit', function(e) {
+                        var quantityInput = form.querySelector('input[name="quantity"]');
+                        
+                        if (!quantityInput) {
+                            return true;
+                        }
+
+                        var quantity = parseInt(quantityInput.value) || 0;
+                        var min = parseInt(quantityInput.getAttribute('min')) || 1;
+                        var max = parseInt(quantityInput.getAttribute('max')) || 999;
+
+                        if (quantity < min) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('Số lượng tối thiểu là ' + min + ' tài khoản.');
+                            quantityInput.focus();
+                            return false;
+                        }
+
+                        if (quantity > max) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('Số lượng tối đa là ' + max + ' tài khoản.');
+                            quantityInput.focus();
+                            return false;
+                        }
+
+                        if (quantity <= 0) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('Vui lòng nhập số lượng hợp lệ.');
+                            quantityInput.focus();
+                            return false;
+                        }
+
+                        // Disable submit button to prevent double submission
+                        var submitBtn = form.querySelector('button[type="submit"]');
+                        if (submitBtn) {
+                            submitBtn.disabled = true;
+                            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+                        }
+                    }, true);
+                });
+            }
+            
+            // Chờ DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(initWhiteAccounts, 200);
+                });
+            } else {
+                setTimeout(initWhiteAccounts, 200);
+            }
+        })();
     </script>
 @endpush
 
