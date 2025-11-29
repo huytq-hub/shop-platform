@@ -189,6 +189,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            
         }
 
         .info-card::before {
@@ -215,7 +216,7 @@
         }
 
         .info-card strong {
-            color: #fff;
+            color: #000;
             display: block;
             margin-bottom: 6px;
             font-size: 15px;
@@ -654,27 +655,108 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Quantity input controls
-            document.querySelectorAll('.qty-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const targetId = this.dataset.target;
-                    const input = document.getElementById(targetId);
-                    if (!input || input.disabled) return;
+        (function($) {
+            'use strict';
+            
+            $(document).ready(function() {
+                console.log('Reroll accounts script loaded');
+                
+                // Quantity input controls - Tăng/giảm số lượng
+                $(document).on('click', '.qty-btn', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const $btn = $(this);
+                    const targetId = $btn.data('target');
+                    const $input = $('#' + targetId);
+                    
+                    if (!$input.length || $input.prop('disabled')) {
+                        console.log('Input not found or disabled:', targetId);
+                        return;
+                    }
 
-                    const current = parseInt(input.value) || 0;
-                    const min = parseInt(input.min) || 1;
-                    const max = parseInt(input.max) || 20;
-                    const isPlus = this.classList.contains('qty-plus');
+                    const current = parseInt($input.val()) || parseInt($input.attr('min')) || 1;
+                    const min = parseInt($input.attr('min')) || 1;
+                    const max = parseInt($input.attr('max')) || 999;
+                    const isPlus = $btn.hasClass('qty-plus');
 
+                    let newValue = current;
                     if (isPlus && current < max) {
-                        input.value = current + 1;
+                        newValue = current + 1;
                     } else if (!isPlus && current > min) {
-                        input.value = current - 1;
+                        newValue = current - 1;
+                    }
+
+                    if (newValue !== current) {
+                        $input.val(newValue).trigger('change');
+                        console.log('Quantity changed:', newValue);
                     }
                 });
+
+                // Real-time validation on input change
+                $(document).on('change', 'input[name="quantity"]', function() {
+                    const $input = $(this);
+                    const value = parseInt($input.val()) || 0;
+                    const min = parseInt($input.attr('min')) || 1;
+                    const max = parseInt($input.attr('max')) || 999;
+
+                    if (value < min) {
+                        $input.val(min);
+                    } else if (value > max) {
+                        $input.val(max);
+                    }
+                });
+
+                $(document).on('input', 'input[name="quantity"]', function() {
+                    const $input = $(this);
+                    const value = parseInt($input.val());
+                    if (isNaN(value) || value < 0) {
+                        $input.val($input.attr('min') || 1);
+                    }
+                });
+
+                // Validate quantity on form submit
+                $(document).on('submit', 'form.white-batch-card__form', function(e) {
+                    const $form = $(this);
+                    const $quantityInput = $form.find('input[name="quantity"]');
+                    
+                    if (!$quantityInput.length) {
+                        console.log('Quantity input not found in form');
+                        return;
+                    }
+
+                    const quantity = parseInt($quantityInput.val()) || 0;
+                    const min = parseInt($quantityInput.attr('min')) || 1;
+                    const max = parseInt($quantityInput.attr('max')) || 999;
+
+                    console.log('Form submit - quantity:', quantity, 'min:', min, 'max:', max);
+
+                    if (quantity < min) {
+                        e.preventDefault();
+                        alert('Số lượng tối thiểu là ' + min + ' tài khoản.');
+                        $quantityInput.focus();
+                        return false;
+                    }
+
+                    if (quantity > max) {
+                        e.preventDefault();
+                        alert('Số lượng tối đa là ' + max + ' tài khoản.');
+                        $quantityInput.focus();
+                        return false;
+                    }
+
+                    if (quantity <= 0) {
+                        e.preventDefault();
+                        alert('Vui lòng nhập số lượng hợp lệ.');
+                        $quantityInput.focus();
+                        return false;
+                    }
+
+                    // Disable submit button to prevent double submission
+                    $form.find('button[type="submit"]').prop('disabled', true).text('Đang xử lý...');
+                });
             });
-        });
+        })(jQuery);
     </script>
 @endpush
 
