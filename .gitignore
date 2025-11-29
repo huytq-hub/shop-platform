@@ -20,4 +20,5 @@ yarn-error.log
 /*.sql
 .bmad/
 .cursor/
+docs/
 

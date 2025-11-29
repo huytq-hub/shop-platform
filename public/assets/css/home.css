@@ -649,6 +649,11 @@
     background: rgba(245, 247, 255, 0.6);
     text-align: center;
     border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
 }
 
 .welcome-modal__btn {
@@ -676,6 +681,58 @@
 .welcome-modal__btn i {
     margin-right: 8px;
     font-size: 1.8rem;
+}
+
+.welcome-modal__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.welcome-modal__btn-close-later {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 1.4rem;
+    text-transform: none;
+    border: 2px solid rgba(14, 62, 218, 0.2);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    flex: 1;
+    min-width: 0;
+}
+
+.welcome-modal__btn-close-later:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(14, 62, 218, 0.15);
+}
+
+.welcome-modal__btn-close-later:active {
+    transform: translateY(0);
+}
+
+.welcome-modal__btn-close-later:disabled,
+.welcome-modal__btn-close-later--active {
+    background: rgba(14, 62, 218, 0.1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.8;
+}
+
+.welcome-modal__btn-close-later i {
+    margin-right: 8px;
+    font-size: 1.4rem;
 }
 
 @keyframes fadeIn {
@@ -720,9 +777,16 @@
     
     .welcome-modal__footer {
         padding: 15px 20px;
+        flex-direction: column;
     }
     
     .welcome-modal__btn {
         width: 100%;
+    }
+    
+    .welcome-modal__btn-close-later {
+        width: 100%;
+        font-size: 1.3rem;
+        padding: 10px 20px;
     }
 }

@@ -138,6 +138,25 @@
                                 </div>
                             </div>
                             <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Tự động đóng sau</label>
+                                    <select name="welcome_modal_auto_close_duration"
+                                        class="form-control @error('welcome_modal_auto_close_duration') is-invalid @enderror">
+                                        <option value="1h" {{ old('welcome_modal_auto_close_duration', $configs['welcome_modal_auto_close_duration'] ?? '2h') == '1h' ? 'selected' : '' }}>
+                                            1 giờ
+                                        </option>
+                                        <option value="2h" {{ old('welcome_modal_auto_close_duration', $configs['welcome_modal_auto_close_duration'] ?? '2h') == '2h' ? 'selected' : '' }}>
+                                            2 giờ
+                                        </option>
+                                    </select>
+                                    @error('welcome_modal_auto_close_duration')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <small class="form-text text-muted">Thời gian tự động đóng cửa sổ thông báo chào mừng sau
+                                        khi hiển thị</small>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
                                 <button type="submit" class="btn btn-submit me-2">Lưu thay đổi</button>
                                 <a href="{{ route('admin.index') }}" class="btn btn-cancel">Hủy bỏ</a>
                             </div>
