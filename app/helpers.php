@@ -152,13 +152,32 @@ if (!function_exists('config_get')) {
      *
      * @param string $key
      * @param mixed $default
+     * @param bool $forceRefresh Bỏ qua cache và lấy trực tiếp từ database
      * @return mixed
      */
-    function config_get($key, $default = null)
+    function config_get($key, $default = null, $forceRefresh = false)
     {
         $cacheKey = 'config_' . $key;
 
-        // Kiểm tra cache trước
+        // Trong môi trường development, tự động bypass cache để dễ dàng test khi thay đổi trực tiếp trong phpMyAdmin
+        $isDevelopment = config('app.env') === 'local' || config('app.debug');
+        
+        // Nếu là development mode và không force refresh, vẫn check cache nhưng ưu tiên database
+        // Nếu forceRefresh = true, bỏ qua cache hoàn toàn
+        if ($forceRefresh || $isDevelopment) {
+            // Trong development mode hoặc force refresh, lấy trực tiếp từ database
+            $config = Config::where('key', $key)->first();
+            $value = $config ? $config->value : $default;
+            
+            // Vẫn cập nhật cache để production mode hoạt động tốt
+            if ($value !== null) {
+                Cache::put($cacheKey, $value, now()->addDay());
+            }
+            
+            return $value;
+        }
+
+        // Production mode: Kiểm tra cache trước
         if (Cache::has($cacheKey)) {
             return Cache::get($cacheKey);
         }
@@ -236,11 +255,32 @@ if (!function_exists('config_clear_cache')) {
     /**
      * Xóa cache cấu hình
      *
+     * @param string|null $key Nếu có key, chỉ xóa cache của key đó. Nếu null, xóa toàn bộ cache
      * @return void
      */
-    function config_clear_cache()
+    function config_clear_cache($key = null)
     {
-        Cache::flush();
+        if ($key !== null) {
+            // Chỉ xóa cache của một key cụ thể
+            Cache::forget('config_' . $key);
+        } else {
+            // Xóa toàn bộ cache
+            Cache::flush();
+        }
+    }
+}
+
+if (!function_exists('config_clear_key')) {
+    /**
+     * Xóa cache của một key cấu hình cụ thể
+     * Tiện lợi hơn khi chỉ cần clear một key
+     *
+     * @param string $key
+     * @return void
+     */
+    function config_clear_key($key)
+    {
+        Cache::forget('config_' . $key);
     }
 }
 
@@ -283,4 +323,50 @@ function display_status_transactions_admin($status)
     $text = $statusText[$status] ?? 'Khác';
 
     return "<span class=\"badges {$class}\">{$text}</span>";
+}
+
+if (!function_exists('get_image_url')) {
+    /**
+     * Lấy URL đầy đủ cho ảnh từ config
+     * Hỗ trợ cả URL đầy đủ, đường dẫn /storage, và đường dẫn tương đối
+     *
+     * @param string|null $path Đường dẫn ảnh
+     * @return string URL đầy đủ
+     */
+    function get_image_url($path)
+    {
+        if (empty($path)) {
+            return '';
+        }
+
+        // Nếu đã là URL đầy đủ (http/https), trả về nguyên bản
+        if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) {
+            return $path;
+        }
+
+        // Nếu bắt đầu với /storage, sử dụng asset() với URL hiện tại của request
+        // asset() sẽ tự động sử dụng URL hiện tại (127.0.0.1:8000 hoặc domain thực tế)
+        if (strpos($path, '/storage') === 0) {
+            return asset($path);
+        }
+
+        // Các trường hợp khác, sử dụng asset() helper
+        return asset($path);
+    }
+}
+
+if (!function_exists('config_get_image')) {
+    /**
+     * Lấy URL ảnh từ config và tự động xử lý đường dẫn
+     * Tương đương với get_image_url(config_get($key, $default))
+     *
+     * @param string $key Khóa config
+     * @param string|null $default Giá trị mặc định
+     * @return string URL đầy đủ của ảnh
+     */
+    function config_get_image($key, $default = null)
+    {
+        $path = config_get($key, $default);
+        return get_image_url($path);
+    }
 }

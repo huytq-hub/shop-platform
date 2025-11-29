@@ -58,7 +58,7 @@
     <div class="container">
         <div class="header">
             @if (config_get('site_logo'))
-                <img src="{{ config_get('site_logo') }}" alt="{{ config_get('site_name') }}" class="logo">
+                <img src="{{ config_get_image('site_logo') }}" alt="{{ config_get('site_name') }}" class="logo">
             @endif
             <h2>Kiểm tra cấu hình email</h2>
         </div>
