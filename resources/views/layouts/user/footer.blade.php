@@ -12,7 +12,7 @@
         <div class="footer__content">
             <div class="footer__column">
                 <a href="/" class="footer__logo">
-                    <img src="{{ config_get('site_logo_footer') }}" alt="{{ config_get('site_name') }}" height="40"
+                    <img src="{{ config_get_image('site_logo_footer') }}" alt="{{ config_get('site_name') }}" height="40"
                         width="200">
                 </a>
                 <p class="footer__desc">

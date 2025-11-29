@@ -116,3 +116,12 @@ Route::prefix('lucky')->name('lucky.')->group(function () {
 
 // Discount code routes
 Route::post('/discount-code/validate', [DiscountCodeController::class, 'validateCode'])->name('discount.validate');
+
+// Fallback route để serve file từ storage nếu symlink không hoạt động (Windows)
+Route::get('/storage/{path}', function ($path) {
+    $filePath = storage_path('app/public/' . $path);
+    if (file_exists($filePath)) {
+        return response()->file($filePath);
+    }
+    abort(404);
+})->where('path', '.*');

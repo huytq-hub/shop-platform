@@ -111,7 +111,7 @@
                                     <div class="form-group mt-3">
                                         <label>Logo hiện tại:</label>
                                         <div>
-                                            <img id="preview-logo" src="{{ $configs['site_logo'] }}" alt="Logo"
+                                            <img id="preview-logo" src="{{ get_image_url($configs['site_logo']) }}" alt="Logo"
                                                 class="img-fluid mt-2" style="max-height: 100px;">
                                         </div>
                                     </div>
@@ -145,7 +145,7 @@
                                     <div class="form-group mt-3">
                                         <label>Logo chân trang hiện tại:</label>
                                         <div>
-                                            <img id="preview-logo-footer" src="{{ $configs['site_logo_footer'] }}"
+                                            <img id="preview-logo-footer" src="{{ get_image_url($configs['site_logo_footer']) }}"
                                                 alt="Logo Footer" class="img-fluid mt-2" style="max-height: 50px;">
                                         </div>
                                     </div>
@@ -180,7 +180,7 @@
                                     <div class="form-group mt-3">
                                         <label>Favicon hiện tại:</label>
                                         <div>
-                                            <img id="preview-favicon" src="{{ $configs['site_favicon'] }}"
+                                            <img id="preview-favicon" src="{{ get_image_url($configs['site_favicon']) }}"
                                                 alt="Favicon" class="img-fluid mt-2" style="max-height: 50px;">
                                         </div>
                                     </div>
@@ -213,7 +213,7 @@
                                     <div class="form-group mt-3">
                                         <label>Ảnh banner hiện tại:</label>
                                         <div>
-                                            <img id="preview-banner" src="{{ $configs['site_banner'] }}" alt="Banner"
+                                            <img id="preview-banner" src="{{ get_image_url($configs['site_banner']) }}" alt="Banner"
                                                 class="img-fluid mt-2" style="max-height: 200px;">
                                         </div>
                                     </div>
@@ -246,7 +246,7 @@
                                     <div class="form-group mt-3">
                                         <label>Ảnh bìa hiện tại:</label>
                                         <div>
-                                            <img id="preview-share-image" src="{{ $configs['site_share_image'] }}"
+                                            <img id="preview-share-image" src="{{ get_image_url($configs['site_share_image']) }}"
                                                 alt="Image Share" class="img-fluid mt-2" style="max-height: 200px;">
                                         </div>
                                     </div>

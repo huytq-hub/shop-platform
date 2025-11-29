@@ -26,7 +26,7 @@
     <meta property="og:site_name" content="{{ config_get('site_name') }}" />
     <meta property="og:title" content="@yield('title', config_get('site_name')) - {{ config_get('site_name') }}" />
     <meta property="og:description" content="{{ config_get('site_description') }}" />
-    <meta property="og:image" content="{{ config_get('site_share_image', config_get('site_logo')) }}" />
+    <meta property="og:image" content="{{ config_get_image('site_share_image', config_get('site_logo')) }}" />
     <meta property="og:image:alt" content="{{ config_get('site_name') }}" />
     <meta property="og:locale" content="vi_VN" />
 
@@ -35,7 +35,7 @@
     <meta name="twitter:url" content="{{ url()->current() }}" />
     <meta name="twitter:title" content="@yield('title', config_get('site_name')) - {{ config_get('site_name') }}" />
     <meta name="twitter:description" content="{{ config_get('site_description') }}" />
-    <meta name="twitter:image" content="{{ config_get('site_share_image', config_get('site_logo')) }}" />
+    <meta name="twitter:image" content="{{ config_get_image('site_share_image', config_get('site_logo')) }}" />
     <meta name="twitter:image:alt" content="{{ config_get('site_name') }}" />
 
     <!-- Favicon -->
@@ -99,7 +99,7 @@
             "@type": "Organization",
             "name": "{{ config_get('site_name') }}",
             "url": "{{ url('/') }}",
-            "logo": "{{ config_get('site_logo') }}",
+            "logo": "{{ config_get_image('site_logo') }}",
             "contactPoint": {
                 "@type": "ContactPoint",
                 "telephone": "{{ config_get('phone') }}",

@@ -23,7 +23,7 @@
 <nav class="nav">
     <div class="container row">
         <a href="/" style="display: flex; align-items: center">
-            <img src="{{ config_get('site_logo') }}" alt="{{ config_get('site_name') }}" class="nav__logo" />
+            <img src="{{ config_get_image('site_logo') }}" alt="{{ config_get('site_name') }}" class="nav__logo" />
         </a>
         <div class="nav__menu">
             <a href="/" class="text menu__item {{ request()->is('/') ? 'active' : '' }}">Trang chủ</a>

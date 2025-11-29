@@ -15,7 +15,7 @@
             <!-- Banner -->
             <div class="hero-banner">
                 <a href="{{ route('category.show-all') }}">
-                    <img src="{{ config_get('site_banner') }}" alt="{{ config_get('site_description') }}"
+                    <img src="{{ config_get_image('site_banner') }}" alt="{{ config_get('site_description') }}"
                         class="hero-banner__img">
                 </a>
             </div>
@@ -261,7 +261,7 @@
                     <button class="welcome-modal__close">&times;</button>
                 </div>
                 <div class="welcome-modal__body">
-                    <img src="{{ config_get('site_logo') }}" alt="{{ config_get('site_description') }}"
+                    <img src="{{ config_get_image('site_logo') }}" alt="{{ config_get('site_description') }}"
                         class="welcome-modal__icon">
 
                     <p>Chào mừng bạn đến với <b>{{ config_get('site_name') }}</b>!</p>

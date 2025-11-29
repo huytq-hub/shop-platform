@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use App\Helpers\UploadHelper;
 
 class ConfigController extends Controller
@@ -35,18 +36,20 @@ class ConfigController extends Controller
         $title = 'Cài đặt chung';
 
         // Lấy tất cả cấu hình chung
+        // Sử dụng forceRefresh = true để đảm bảo lấy giá trị mới nhất từ database
+        // Đặc biệt hữu ích khi thay đổi trực tiếp trong phpMyAdmin
         $configs = [
-            'site_name' => config_get('site_name', 'Shop Game Ngọc Rồng - THIẾT KẾ BỞI TUANORI.VN'),
-            'site_description' => config_get('site_description', 'Mua bán tài khoản game Ngọc Rồng'),
-            'site_keywords' => config_get('site_keywords', 'Mua bán tài khoản game Ngọc Rồng'),
-            'site_logo' => config_get('site_logo'),
-            'site_logo_footer' => config_get('site_logo_footer'),
-            'site_share_image' => config_get('site_share_image'),
-            'site_banner' => config_get('site_banner'),
-            'site_favicon' => config_get('site_favicon'),
-            'address' => config_get('address', ''),
-            'phone' => config_get('phone', ''),
-            'email' => config_get('email', ''),
+            'site_name' => config_get('site_name', 'Shop Game Ngọc Rồng - THIẾT KẾ BỞI TUANORI.VN', true),
+            'site_description' => config_get('site_description', 'Mua bán tài khoản game Ngọc Rồng', true),
+            'site_keywords' => config_get('site_keywords', 'Mua bán tài khoản game Ngọc Rồng', true),
+            'site_logo' => config_get('site_logo', null, true),
+            'site_logo_footer' => config_get('site_logo_footer', null, true),
+            'site_share_image' => config_get('site_share_image', null, true),
+            'site_banner' => config_get('site_banner', null, true),
+            'site_favicon' => config_get('site_favicon', null, true),
+            'address' => config_get('address', '', true),
+            'phone' => config_get('phone', '', true),
+            'email' => config_get('email', '', true),
         ];
 
         return view('admin.settings.general', compact('title', 'configs'));
@@ -94,6 +97,9 @@ class ConfigController extends Controller
                     // Upload file mới
                     $imageUrl = UploadHelper::upload($request->file('site_' . $key), self::UPLOAD_DIR);
                     config_set('site_' . $key, $imageUrl);
+                    
+                    // Clear cache ngay lập tức cho key này
+                    Cache::forget('config_site_' . $key);
                 }
             }
 
