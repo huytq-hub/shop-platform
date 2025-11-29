@@ -72,6 +72,13 @@
                             <i class="fas fa-wallet"></i> Số dư: {{ number_format(Auth::user()->balance) }}đ
                         </a>
                     </li>
+                    @if (Auth::check() && Auth()->user()->role == 'admin')
+                    <li>
+                        <a href="{{ route('admin.index') }}" target="_blank" class="mobile-overlay-menu__link">
+                            <i class="fas fa-cog"></i> Admin Panel
+                        </a>
+                    </li>
+                    @endif
                     <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
