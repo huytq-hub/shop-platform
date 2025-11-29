@@ -1,7 +1,7 @@
 @extends('layouts.user.app')
 @section('title', 'Acc trắng Garena')
 @section('content')
-    <x-hero-header title="ACC TRẮNG GARENA & REROLL" description="Mua nhanh tài khoản trắng (chỉ user/pass) hoặc tài khoản đã reroll vượt tân thủ" />
+    <x-hero-header title="ACC TRẮNG GARENA" description="Mua nhanh tài khoản trắng (chỉ user/pass), chưa đăng nhập lần nào" />
 
     <div class="container white-accounts-wrapper">
         @if (session('success'))
@@ -41,35 +41,13 @@
             </div>
         </div>
 
-        @php
-            $whiteBatches = $batches->where('account_type', 'white');
-            $rerollBatches = $batches->where('account_type', 'reroll_white');
-        @endphp
-
         @if ($batches->count() > 0)
-            <div class="white-accounts-tabs">
-                <button class="tab-btn active" data-tab="all">
-                    <i class="fas fa-th"></i> Tất cả ({{ $batches->count() }})
-                </button>
-                @if ($whiteBatches->count() > 0)
-                    <button class="tab-btn" data-tab="white">
-                        <i class="fas fa-user"></i> Acc trắng ({{ $whiteBatches->count() }})
-                    </button>
-                @endif
-                @if ($rerollBatches->count() > 0)
-                    <button class="tab-btn" data-tab="reroll">
-                        <i class="fas fa-redo"></i> Acc reroll ({{ $rerollBatches->count() }})
-                    </button>
-                @endif
-            </div>
-
             <div class="white-batch-grid" id="batchGrid">
                 @foreach ($batches as $batch)
-                    <div class="white-batch-card white-batch-card--{{ $batch->account_type }}" 
-                         data-type="{{ $batch->account_type === 'white' ? 'white' : 'reroll' }}">
+                    <div class="white-batch-card white-batch-card--white">
                         <div class="white-batch-card__badge">
-                            <i class="fas {{ $batch->account_type === 'white' ? 'fa-user' : 'fa-redo' }}"></i>
-                            {{ $batch->account_type === 'white' ? 'ACC TRẮNG' : 'ACC REROLL' }}
+                            <i class="fas fa-user"></i>
+                            ACC TRẮNG
                         </div>
                         
                         <div class="white-batch-card__header">
@@ -155,7 +133,7 @@
     </div>
 @endsection
 
-@push('styles')
+@push('css')
     <style>
         .white-accounts-wrapper {
             padding: 30px 15px 60px;
@@ -261,62 +239,6 @@
             text-decoration: underline;
         }
 
-        .white-accounts-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tab-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #9ea7c2;
-            padding: 12px 24px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-        }
-
-        .tab-btn i {
-            font-size: 13px;
-        }
-
-        .tab-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(0, 188, 212, 0.3);
-            color: #fff;
-            transform: translateY(-2px);
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, #00bcd4 0%, #4fc3f7 100%);
-            border-color: #00bcd4;
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
-        }
-
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -21px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 8px solid #00bcd4;
-        }
-
         .white-batch-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -381,14 +303,6 @@
             box-shadow: 0 12px 32px rgba(255, 213, 79, 0.25);
         }
 
-        .white-batch-card--reroll_white::before {
-            background: linear-gradient(90deg, #4fc3f7 0%, #29b6f6 100%);
-        }
-
-        .white-batch-card--reroll_white:hover {
-            border-color: rgba(79, 195, 247, 0.4);
-            box-shadow: 0 12px 32px rgba(79, 195, 247, 0.25);
-        }
 
         .white-batch-card__badge {
             position: absolute;
@@ -415,13 +329,6 @@
             border-color: rgba(255, 213, 79, 0.4);
             color: #ffd54f;
             box-shadow: 0 2px 8px rgba(255, 213, 79, 0.2);
-        }
-
-        .white-batch-card--reroll_white .white-batch-card__badge {
-            background: linear-gradient(135deg, rgba(79, 195, 247, 0.2) 0%, rgba(41, 182, 246, 0.2) 100%);
-            border-color: rgba(79, 195, 247, 0.4);
-            color: #4fc3f7;
-            box-shadow: 0 2px 8px rgba(79, 195, 247, 0.2);
         }
 
         .white-batch-card__header {
@@ -736,15 +643,6 @@
                 gap: 16px;
             }
 
-            .white-accounts-tabs {
-                gap: 8px;
-            }
-
-            .tab-btn {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-
             .white-batch-card {
                 padding: 20px;
             }
@@ -765,30 +663,6 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Tab filtering
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            const batchCards = document.querySelectorAll('.white-batch-card');
-
-            tabButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const tab = this.dataset.tab;
-                    
-                    // Update active state
-                    tabButtons.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-
-                    // Filter cards
-                    batchCards.forEach(card => {
-                        if (tab === 'all') {
-                            card.style.display = '';
-                        } else {
-                            const cardType = card.dataset.type;
-                            card.style.display = (cardType === tab) ? '' : 'none';
-                        }
-                    });
-                });
-            });
-
             // Quantity input controls
             document.querySelectorAll('.qty-btn').forEach(btn => {
                 btn.addEventListener('click', function() {

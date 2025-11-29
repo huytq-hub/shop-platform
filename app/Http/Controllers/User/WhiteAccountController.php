@@ -16,12 +16,12 @@ class WhiteAccountController extends Controller
     public function index()
     {
         $batches = WhiteAccountBatch::where('is_active', true)
+            ->where('account_type', 'white')
             ->withCount([
                 'accounts as available_accounts' => function ($query) {
                     $query->where('status', 'available');
                 },
             ])
-            ->orderBy('account_type')
             ->orderBy('name')
             ->get();
 
