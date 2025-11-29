@@ -68,8 +68,8 @@
                                                 class="img-thumbnail" style="max-width: 200px;">
                                         </td>
                                         <td>
-                                            <span class="badges {{ $category->type === 'white_accounts' ? 'bg-lightpurple' : 'bg-lightgrey' }}">
-                                                {{ $category->type === 'white_accounts' ? 'Acc trắng' : 'Chuẩn' }}
+                                            <span class="badges {{ $category->type === 'white_accounts' ? 'bg-lightpurple' : ($category->type === 'reroll_accounts' ? 'bg-lightblue' : 'bg-lightgrey') }}">
+                                                {{ $category->type === 'white_accounts' ? 'Acc trắng' : ($category->type === 'reroll_accounts' ? 'Acc reroll' : 'Chuẩn') }}
                                             </span>
                                         </td>
                                         <td><span

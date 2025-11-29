@@ -25,6 +25,10 @@ class GameCategoryController extends Controller
             return redirect()->route('white-accounts.index');
         }
 
+        if ($category->type === 'reroll_accounts') {
+            return redirect()->route('reroll-accounts.index');
+        }
+
         // Get all accounts linked to this category
         $accounts = GameAccount::where('game_category_id', $category->id);
         if (!$request->filled('status')) {
@@ -88,10 +92,24 @@ class GameCategoryController extends Controller
             'sold' => WhiteAccount::where('status', 'sold')->count(),
         ];
 
+        $rerollStats = [
+            'available' => WhiteAccount::join('white_account_batches as wab', 'white_accounts.batch_id', '=', 'wab.id')
+                ->where('white_accounts.status', 'available')
+                ->where('wab.account_type', 'reroll_white')
+                ->count(),
+            'sold' => WhiteAccount::join('white_account_batches as wab', 'white_accounts.batch_id', '=', 'wab.id')
+                ->where('white_accounts.status', 'sold')
+                ->where('wab.account_type', 'reroll_white')
+                ->count(),
+        ];
+
         foreach ($categories as $category) {
             if (($category->type ?? 'standard') === 'white_accounts') {
                 $category->allAccount = $whiteStats['available'];
                 $category->soldCount = $whiteStats['sold'];
+            } elseif (($category->type ?? 'standard') === 'reroll_accounts') {
+                $category->allAccount = $rerollStats['available'];
+                $category->soldCount = $rerollStats['sold'];
             } else {
                 $category->allAccount = GameAccount::where('game_category_id', $category->id)->count();
                 $category->soldCount = GameAccount::where('game_category_id', $category->id)

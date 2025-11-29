@@ -31,10 +31,33 @@ class HomeController extends Controller
         $categories = Category::where('active', 1)->orderBy('updated_at', 'desc')->get();
 
         $whiteStats = [
-            'available' => WhiteAccount::where('status', 'available')->count(),
-            'sold' => WhiteAccount::where('status', 'sold')->count(),
+            'available' => WhiteAccount::join('white_account_batches as wab', 'white_accounts.batch_id', '=', 'wab.id')
+                ->where('white_accounts.status', 'available')
+                ->where('wab.account_type', 'white')
+                ->count(),
+            'sold' => WhiteAccount::join('white_account_batches as wab', 'white_accounts.batch_id', '=', 'wab.id')
+                ->where('white_accounts.status', 'sold')
+                ->where('wab.account_type', 'white')
+                ->count(),
             'min_price' => WhiteAccount::join('white_account_batches as wab', 'white_accounts.batch_id', '=', 'wab.id')
                 ->where('white_accounts.status', 'available')
+                ->where('wab.account_type', 'white')
+                ->selectRaw('MIN(COALESCE(white_accounts.unit_price, wab.default_price)) as price')
+                ->value('price'),
+        ];
+
+        $rerollStats = [
+            'available' => WhiteAccount::join('white_account_batches as wab', 'white_accounts.batch_id', '=', 'wab.id')
+                ->where('white_accounts.status', 'available')
+                ->where('wab.account_type', 'reroll_white')
+                ->count(),
+            'sold' => WhiteAccount::join('white_account_batches as wab', 'white_accounts.batch_id', '=', 'wab.id')
+                ->where('white_accounts.status', 'sold')
+                ->where('wab.account_type', 'reroll_white')
+                ->count(),
+            'min_price' => WhiteAccount::join('white_account_batches as wab', 'white_accounts.batch_id', '=', 'wab.id')
+                ->where('white_accounts.status', 'available')
+                ->where('wab.account_type', 'reroll_white')
                 ->selectRaw('MIN(COALESCE(white_accounts.unit_price, wab.default_price)) as price')
                 ->value('price'),
         ];
@@ -44,6 +67,10 @@ class HomeController extends Controller
                 $category->allAccount = $whiteStats['available'];
                 $category->soldCount = $whiteStats['sold'];
                 $category->white_min_price = $whiteStats['min_price'];
+            } elseif ($category->type === 'reroll_accounts') {
+                $category->allAccount = $rerollStats['available'];
+                $category->soldCount = $rerollStats['sold'];
+                $category->white_min_price = $rerollStats['min_price'];
             } else {
                 $category->soldCount = GameAccount::where('game_category_id', $category->id)
                     ->where('status', 'sold')
