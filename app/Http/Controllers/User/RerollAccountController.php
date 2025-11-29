@@ -11,12 +11,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class WhiteAccountController extends Controller
+class RerollAccountController extends Controller
 {
     public function index()
     {
         $batches = WhiteAccountBatch::where('is_active', true)
-            ->where('account_type', 'white')
+            ->where('account_type', 'reroll_white')
             ->withCount([
                 'accounts as available_accounts' => function ($query) {
                     $query->where('status', 'available');
@@ -35,7 +35,7 @@ class WhiteAccountController extends Controller
         $maxPerOrder = (int) (config_get('white_account.max_per_order', 20) ?? 20);
         $minPerOrder = (int) (config_get('white_account.min_per_order', 1) ?? 1);
 
-        return view('user.white-accounts.index', [
+        return view('user.reroll-accounts.index', [
             'batches' => $batches,
             'minPrices' => $minPrices,
             'maxPerOrder' => max($minPerOrder, $maxPerOrder),
@@ -135,22 +135,18 @@ class WhiteAccountController extends Controller
                 'amount' => -$totalAmount,
                 'balance_before' => $balanceBefore,
                 'balance_after' => $balanceAfter,
-                'description' => 'Mua acc trắng (' . $batch->name . ') x' . $quantity,
+                'description' => 'Mua acc reroll (' . $batch->name . ') x' . $quantity,
                 'reference_id' => 'WA-' . $purchase->id,
             ]);
 
             DB::commit();
 
             return redirect()->route('profile.white-accounts')
-                ->with('success', 'Mua acc trắng thành công! Kiểm tra danh sách bàn giao trong mục "Acc trắng đã mua".');
+                ->with('success', 'Mua acc reroll thành công! Kiểm tra danh sách bàn giao trong mục "Acc trắng đã mua".');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->with('error', 'Không thể hoàn tất giao dịch: ' . $th->getMessage());
         }
     }
 }
-
-
-
-
 

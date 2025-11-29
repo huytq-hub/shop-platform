@@ -144,12 +144,15 @@
                 @foreach ($categories as $category)
                     @php
                         $isWhiteCategory = ($category->type ?? 'standard') === 'white_accounts';
+                        $isRerollCategory = ($category->type ?? 'standard') === 'reroll_accounts';
                         $categoryLink = $isWhiteCategory
                             ? route('white-accounts.index')
-                            : route('category.index', ['slug' => $category->slug]);
+                            : ($isRerollCategory
+                                ? route('reroll-accounts.index')
+                                : route('category.index', ['slug' => $category->slug]));
                     @endphp
                     <a href="{{ $categoryLink }}"
-                        class="category__item {{ $isWhiteCategory ? 'category__item--white' : '' }}">
+                        class="category__item {{ $isWhiteCategory ? 'category__item--white' : '' }} {{ $isRerollCategory ? 'category__item--reroll' : '' }}">
                         <!-- @if ($isWhiteCategory)
                             <div class="category__white-ribbon">ACC TRẮNG</div>
                         @endif -->
@@ -160,14 +163,14 @@
                         </p>
                         <div class="category__stats">
                             <span class="badge">
-                                @if ($isWhiteCategory)
+                                @if ($isWhiteCategory || $isRerollCategory)
                                     Còn: {{ number_format($category->allAccount) }} nick
                                 @else
                                     {{ number_format($category->allAccount) }} Tài khoản
                                 @endif
                             </span>
                             <span class="badge">
-                                @if ($isWhiteCategory)
+                                @if ($isWhiteCategory || $isRerollCategory)
                                     Giá từ: {{ $category->white_min_price ? number_format($category->white_min_price) . 'đ' : 'Đang cập nhật' }}
                                 @else
                                     Đã bán: {{ number_format($category->soldCount) }}

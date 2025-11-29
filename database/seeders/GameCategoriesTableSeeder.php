@@ -57,8 +57,15 @@ class GameCategoriesTableSeeder extends Seeder
                 'name' => 'ACC TRẮNG GARENA',
                 'slug' => 'acc-white',
                 'thumbnail' => 'https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/2024_1_15_638409359797732374_tai-garena-pc-1.jpg',
-                'description' => 'Danh mục đặc biệt cho acc trắng/reroll (user & mật khẩu).',
+                'description' => 'Danh mục đặc biệt cho acc trắng (chỉ user/pass).',
                 'type' => 'white_accounts',
+            ],
+            [
+                'name' => 'ACC REROLL GARENA',
+                'slug' => 'acc-reroll',
+                'thumbnail' => 'https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/2024_1_15_638409359797732374_tai-garena-pc-1.jpg',
+                'description' => 'Danh mục đặc biệt cho acc reroll (đã hoàn thành nhiệm vụ tân thủ).',
+                'type' => 'reroll_accounts',
             ],
         ];
 

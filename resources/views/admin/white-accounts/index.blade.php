@@ -46,11 +46,11 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="mb-3">Import hàng loạt</h5>
-                            <form action="{{ route('admin.white-accounts.import') }}" method="POST">
+                            <form action="{{ route('admin.white-accounts.import') }}" method="POST" enctype="multipart/form-data" id="importForm">
                                 @csrf
                                 <div class="form-group">
                                     <label>Chọn lô <span class="text-danger">*</span></label>
-                                    <select name="batch_id" class="select @error('batch_id') is-invalid @enderror">
+                                    <select name="batch_id" class="select @error('batch_id') is-invalid @enderror" required>
                                         <option value="">-- Chọn lô --</option>
                                         @foreach ($batches as $batch)
                                             <option value="{{ $batch->id }}"
@@ -72,21 +72,73 @@
                                     @error('unit_price')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                </div>
-                                <div class="form-group">
-                                    <label>Danh sách tài khoản <span class="text-danger">*</span></label>
-                                    <textarea name="accounts_data" rows="8" class="form-control @error('accounts_data') is-invalid @enderror"
-                                        placeholder="Mỗi dòng một tài khoản, định dạng: username|password|gia_tuy_chon&#10;Ví dụ: user1|pass1|12000">{{ old('accounts_data') }}</textarea>
-                                    @error('accounts_data')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                    <small class="text-muted d-block mt-2">
-                                        Nếu không nhập giá trên từng dòng, hệ thống sẽ lấy giá ở ô "Giá áp dụng"; nếu ô đó
-                                        trống sẽ lấy giá mặc định của lô.
+                                    <small class="text-muted d-block mt-1">
+                                        Giá này sẽ được áp dụng cho tất cả tài khoản nếu không chỉ định giá riêng trên từng dòng.
                                     </small>
                                 </div>
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-submit">Import</button>
+                                
+                                <div class="form-group">
+                                    <label class="mb-2">Cách nhập dữ liệu</label>
+                                    <div class="btn-group w-100 mb-3" role="group">
+                                        <input type="radio" class="btn-check" name="import_method" id="method_text" value="text" checked>
+                                        <label class="btn btn-outline-primary" for="method_text">
+                                            <i class="fas fa-keyboard"></i> Nhập trực tiếp
+                                        </label>
+                                        <input type="radio" class="btn-check" name="import_method" id="method_file" value="file">
+                                        <label class="btn btn-outline-primary" for="method_file">
+                                            <i class="fas fa-file-upload"></i> Upload file
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="textInputSection">
+                                    <div class="form-group">
+                                        <label>Danh sách tài khoản <span class="text-danger">*</span></label>
+                                        <textarea name="accounts_data" id="accounts_data" rows="10" 
+                                            class="form-control @error('accounts_data') is-invalid @enderror"
+                                            placeholder="Mỗi dòng một tài khoản, định dạng: username|password|gia_tuy_chon&#10;&#10;Ví dụ:&#10;user1|pass123|12000&#10;user2|pass456|15000&#10;user3|pass789">{{ old('accounts_data') }}</textarea>
+                                        @error('accounts_data')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div id="fileInputSection" style="display: none;">
+                                    <div class="form-group">
+                                        <label>Upload file <span class="text-danger">*</span></label>
+                                        <input type="file" name="import_file" id="import_file" 
+                                            class="form-control @error('import_file') is-invalid @enderror"
+                                            accept=".txt,.csv">
+                                        @error('import_file')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted d-block mt-2">
+                                            Hỗ trợ file .txt hoặc .csv. Mỗi dòng một tài khoản, định dạng: username|password|gia_tuy_chon
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info mt-3">
+                                    <strong><i class="fas fa-info-circle"></i> Hướng dẫn định dạng:</strong>
+                                    <ul class="mb-0 mt-2">
+                                        <li><strong>Format cơ bản:</strong> <code>username|password</code></li>
+                                        <li><strong>Format có giá:</strong> <code>username|password|gia</code></li>
+                                        <li>Mỗi tài khoản một dòng</li>
+                                        <li>Dòng trống sẽ được bỏ qua</li>
+                                        <li>Nếu không nhập giá trên dòng, hệ thống sẽ dùng "Giá áp dụng" hoặc giá mặc định của lô</li>
+                                    </ul>
+                                    <div class="mt-2">
+                                        <strong>Ví dụ:</strong>
+                                        <pre class="bg-dark text-light p-2 rounded mt-2 mb-0" style="font-size: 12px;">user001|pass123|12000
+user002|pass456|15000
+user003|pass789</pre>
+                                    </div>
+                                </div>
+
+                                <div class="text-end mt-3">
+                                    <button type="submit" class="btn btn-submit">
+                                        <i class="fas fa-upload"></i> Import
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -233,6 +285,59 @@
             font-size: 26px;
             font-weight: 700;
         }
+
+        .btn-check:checked + .btn-outline-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: #fff;
+        }
     </style>
+@endpush
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const methodText = document.getElementById('method_text');
+            const methodFile = document.getElementById('method_file');
+            const textSection = document.getElementById('textInputSection');
+            const fileSection = document.getElementById('fileInputSection');
+            const accountsData = document.getElementById('accounts_data');
+            const importFile = document.getElementById('import_file');
+
+            function toggleInputMethod() {
+                if (methodText.checked) {
+                    textSection.style.display = 'block';
+                    fileSection.style.display = 'none';
+                    importFile.removeAttribute('required');
+                    accountsData.setAttribute('required', 'required');
+                } else {
+                    textSection.style.display = 'none';
+                    fileSection.style.display = 'block';
+                    accountsData.removeAttribute('required');
+                    importFile.setAttribute('required', 'required');
+                }
+            }
+
+            methodText.addEventListener('change', toggleInputMethod);
+            methodFile.addEventListener('change', toggleInputMethod);
+
+            // Handle file upload and preview
+            importFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const content = e.target.result;
+                        // Preview first few lines
+                        const lines = content.split('\n').slice(0, 5);
+                        if (lines.length > 0) {
+                            console.log('File preview:', lines);
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            });
+        });
+    </script>
 @endpush
 

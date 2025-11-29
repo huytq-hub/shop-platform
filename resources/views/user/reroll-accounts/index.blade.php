@@ -1,7 +1,7 @@
 @extends('layouts.user.app')
-@section('title', 'Acc trắng Garena')
+@section('title', 'Acc reroll Garena')
 @section('content')
-    <x-hero-header title="ACC TRẮNG GARENA" description="Mua nhanh tài khoản trắng (chỉ user/pass), chưa đăng nhập lần nào" />
+    <x-hero-header title="ACC REROLL GARENA" description="Mua nhanh tài khoản đã reroll vượt tân thủ (đã hoàn thành nhiệm vụ tân thủ)" />
 
     <div class="container white-accounts-wrapper">
         @if (session('success'))
@@ -44,10 +44,10 @@
         @if ($batches->count() > 0)
             <div class="white-batch-grid" id="batchGrid">
                 @foreach ($batches as $batch)
-                    <div class="white-batch-card white-batch-card--white">
+                    <div class="white-batch-card white-batch-card--{{ $batch->account_type }}">
                         <div class="white-batch-card__badge">
-                            <i class="fas fa-user"></i>
-                            ACC TRẮNG
+                            <i class="fas fa-redo"></i>
+                            ACC REROLL
                         </div>
                         
                         <div class="white-batch-card__header">
@@ -83,7 +83,7 @@
                             </div>
                         </div>
 
-                        <form action="{{ route('white-accounts.purchase', $batch) }}" method="POST"
+                        <form action="{{ route('reroll-accounts.purchase', $batch) }}" method="POST"
                             class="white-batch-card__form">
                             @csrf
                             <div class="form-group">
@@ -126,14 +126,14 @@
         @else
             <div class="empty-state">
                 <i class="fas fa-box-open"></i>
-                <h3>Chưa có lô acc trắng nào đang bán</h3>
+                <h3>Chưa có lô acc reroll nào đang bán</h3>
                 <p>Vui lòng quay lại sau hoặc liên hệ admin để được hỗ trợ.</p>
             </div>
         @endif
     </div>
 @endsection
 
-@push('css')
+@push('styles')
     <style>
         .white-accounts-wrapper {
             padding: 30px 15px 60px;
@@ -263,7 +263,7 @@
             left: 0;
             right: 0;
             height: 5px;
-            background: linear-gradient(90deg, #00bcd4 0%, #4fc3f7 100%);
+            background: linear-gradient(90deg, #4fc3f7 0%, #29b6f6 100%);
             opacity: 0;
             transition: opacity 0.4s;
         }
@@ -275,15 +275,15 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(0, 188, 212, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(79, 195, 247, 0.1) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.4s;
         }
 
         .white-batch-card:hover {
             transform: translateY(-6px);
-            border-color: rgba(0, 188, 212, 0.4);
-            box-shadow: 0 12px 32px rgba(0, 188, 212, 0.25);
+            border-color: rgba(79, 195, 247, 0.4);
+            box-shadow: 0 12px 32px rgba(79, 195, 247, 0.25);
         }
 
         .white-batch-card:hover::before {
@@ -294,23 +294,22 @@
             opacity: 1;
         }
 
-        .white-batch-card--white::before {
-            background: linear-gradient(90deg, #ffd54f 0%, #ffb74d 100%);
+        .white-batch-card--reroll_white::before {
+            background: linear-gradient(90deg, #4fc3f7 0%, #29b6f6 100%);
         }
 
-        .white-batch-card--white:hover {
-            border-color: rgba(255, 213, 79, 0.4);
-            box-shadow: 0 12px 32px rgba(255, 213, 79, 0.25);
+        .white-batch-card--reroll_white:hover {
+            border-color: rgba(79, 195, 247, 0.4);
+            box-shadow: 0 12px 32px rgba(79, 195, 247, 0.25);
         }
-
 
         .white-batch-card__badge {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: linear-gradient(135deg, rgba(0, 188, 212, 0.2) 0%, rgba(79, 195, 247, 0.2) 100%);
-            border: 1px solid rgba(0, 188, 212, 0.4);
-            color: #00bcd4;
+            background: linear-gradient(135deg, rgba(79, 195, 247, 0.2) 0%, rgba(41, 182, 246, 0.2) 100%);
+            border: 1px solid rgba(79, 195, 247, 0.4);
+            color: #4fc3f7;
             padding: 8px 14px;
             border-radius: 24px;
             font-size: 11px;
@@ -320,15 +319,8 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            box-shadow: 0 2px 8px rgba(0, 188, 212, 0.2);
+            box-shadow: 0 2px 8px rgba(79, 195, 247, 0.2);
             z-index: 2;
-        }
-
-        .white-batch-card--white .white-batch-card__badge {
-            background: linear-gradient(135deg, rgba(255, 213, 79, 0.2) 0%, rgba(255, 183, 77, 0.2) 100%);
-            border-color: rgba(255, 213, 79, 0.4);
-            color: #ffd54f;
-            box-shadow: 0 2px 8px rgba(255, 213, 79, 0.2);
         }
 
         .white-batch-card__header {
@@ -339,18 +331,18 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(0, 188, 212, 0.1);
-            border: 1px solid rgba(0, 188, 212, 0.2);
+            background: rgba(79, 195, 247, 0.1);
+            border: 1px solid rgba(79, 195, 247, 0.2);
             padding: 8px 14px;
             border-radius: 8px;
             font-size: 12px;
-            color: #00bcd4;
+            color: #4fc3f7;
             font-weight: 600;
             margin-bottom: 16px;
         }
 
         .white-batch-card__login-badge i {
-            color: #00bcd4;
+            color: #4fc3f7;
             font-size: 13px;
         }
 
@@ -372,13 +364,13 @@
             align-items: flex-start;
             gap: 10px;
             padding: 12px;
-            background: rgba(255, 213, 79, 0.05);
-            border-left: 3px solid rgba(255, 213, 79, 0.3);
+            background: rgba(79, 195, 247, 0.05);
+            border-left: 3px solid rgba(79, 195, 247, 0.3);
             border-radius: 6px;
         }
 
         .white-batch-card__note i {
-            color: #ffd54f;
+            color: #4fc3f7;
             margin-top: 2px;
             flex-shrink: 0;
         }
@@ -457,7 +449,7 @@
         }
 
         .form-group label i {
-            color: #00bcd4;
+            color: #4fc3f7;
         }
 
         .quantity-input-wrapper {
@@ -488,8 +480,8 @@
         }
 
         .qty-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, rgba(0, 188, 212, 0.3) 0%, rgba(79, 195, 247, 0.3) 100%);
-            border-color: #00bcd4;
+            background: linear-gradient(135deg, rgba(79, 195, 247, 0.3) 0%, rgba(41, 182, 246, 0.3) 100%);
+            border-color: #4fc3f7;
             transform: scale(1.05);
         }
 
@@ -566,14 +558,14 @@
         }
 
         .btn-purchase:not(.btn-out-of-stock):not(.btn-login) {
-            background: linear-gradient(135deg, #00bcd4 0%, #4fc3f7 100%);
+            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
             color: #fff;
-            box-shadow: 0 4px 16px rgba(0, 188, 212, 0.3);
+            box-shadow: 0 4px 16px rgba(79, 195, 247, 0.3);
         }
 
         .btn-purchase:not(.btn-out-of-stock):not(.btn-login):hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0, 188, 212, 0.5);
+            box-shadow: 0 8px 24px rgba(79, 195, 247, 0.5);
         }
 
         .btn-purchase:not(.btn-out-of-stock):not(.btn-login):active {
@@ -596,9 +588,9 @@
 
         .btn-login:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(0, 188, 212, 0.4);
+            border-color: rgba(79, 195, 247, 0.4);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.2);
+            box-shadow: 0 4px 12px rgba(79, 195, 247, 0.2);
         }
 
         .empty-state {
@@ -685,8 +677,4 @@
         });
     </script>
 @endpush
-
-
-
-
 

@@ -45,7 +45,7 @@ class GameCategoryController extends Controller
                 'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif',
                 'description' => 'required|string',
                 'status' => 'nullable|boolean',
-                'type' => 'required|in:standard,white_accounts',
+                'type' => 'required|in:standard,white_accounts,reroll_accounts',
             ]);
 
             DB::beginTransaction();
@@ -88,7 +88,7 @@ class GameCategoryController extends Controller
                 'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif',
                 'description' => 'nullable|string',
                 'status' => 'nullable|boolean',
-                'type' => 'required|in:standard,white_accounts',
+                'type' => 'required|in:standard,white_accounts,reroll_accounts',
             ]);
 
             DB::beginTransaction();

@@ -49,6 +49,10 @@
                                             {{ old('type') == 'white_accounts' ? 'selected' : '' }}>
                                             Acc trắng (chỉ user/pass)
                                         </option>
+                                        <option value="reroll_accounts"
+                                            {{ old('type') == 'reroll_accounts' ? 'selected' : '' }}>
+                                            Acc reroll (đã hoàn thành tân thủ)
+                                        </option>
                                     </select>
                                     @error('type')
                                         <div class="invalid-feedback">{{ $message }}</div>

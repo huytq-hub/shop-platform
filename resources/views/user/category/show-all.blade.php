@@ -18,12 +18,15 @@
                     @foreach ($categories as $category)
                         @php
                             $isWhiteCategory = ($category->type ?? 'standard') === 'white_accounts';
+                            $isRerollCategory = ($category->type ?? 'standard') === 'reroll_accounts';
                             $categoryLink = $isWhiteCategory
                                 ? route('white-accounts.index')
-                                : route('category.index', ['slug' => $category->slug]);
+                                : ($isRerollCategory
+                                    ? route('reroll-accounts.index')
+                                    : route('category.index', ['slug' => $category->slug]));
                         @endphp
                         @if ($category->active)
-                            <a href="{{ $categoryLink }}" class="category__item {{ $isWhiteCategory ? 'category__item--white' : '' }}">
+                            <a href="{{ $categoryLink }}" class="category__item {{ $isWhiteCategory ? 'category__item--white' : '' }} {{ $isRerollCategory ? 'category__item--reroll' : '' }}">
                                 <!-- @if ($isWhiteCategory)
                                     <div class="category__white-ribbon">ACC TRẮNG</div>
                                 @endif -->
@@ -32,12 +35,14 @@
                                 <p class="category__desc">
                                     @if ($isWhiteCategory)
                                         Còn {{ number_format($category->allAccount) }} nick trắng, đã bán {{ number_format($category->soldCount) }}.
+                                    @elseif ($isRerollCategory)
+                                        Còn {{ number_format($category->allAccount) }} nick reroll, đã bán {{ number_format($category->soldCount) }}.
                                     @else
                                         Tổng tài khoản: {{ number_format($category->allAccount) }} | Đã bán: {{ number_format($category->soldCount) }}
                                     @endif
                                 </p>
                                 <p class="text category__action">
-                                    {{ $isWhiteCategory ? 'Mua acc trắng' : 'Mua ngay' }}
+                                    {{ $isWhiteCategory ? 'Mua acc trắng' : ($isRerollCategory ? 'Mua acc reroll' : 'Mua ngay') }}
                                 </p>
                             </a>
                         @endif

@@ -21,6 +21,7 @@ use App\Http\Controllers\User\RandomCategoryController;
 use App\Http\Controllers\User\RandomAccountController;
 use App\Http\Controllers\User\WithdrawalController;
 use App\Http\Controllers\User\WhiteAccountController as UserWhiteAccountController;
+use App\Http\Controllers\User\RerollAccountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -103,6 +104,13 @@ Route::prefix('random')->name('random.')->group(function () {
 Route::prefix('white-accounts')->name('white-accounts.')->group(function () {
     Route::get('/', [UserWhiteAccountController::class, 'index'])->name('index');
     Route::post('/batch/{batch}/purchase', [UserWhiteAccountController::class, 'purchase'])
+        ->middleware('auth')
+        ->name('purchase');
+});
+
+Route::prefix('reroll-accounts')->name('reroll-accounts.')->group(function () {
+    Route::get('/', [RerollAccountController::class, 'index'])->name('index');
+    Route::post('/batch/{batch}/purchase', [RerollAccountController::class, 'purchase'])
         ->middleware('auth')
         ->name('purchase');
 });
