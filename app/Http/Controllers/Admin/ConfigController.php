@@ -149,6 +149,7 @@ class ConfigController extends Controller
             'working_hours' => config_get('working_hours', '8:00 - 22:00'),
             'home_notification' => config_get('home_notification', ''),
             'welcome_modal' => config_get('welcome_modal', true),
+            'welcome_modal_auto_close_duration' => config_get('welcome_modal_auto_close_duration', '2h'),
         ];
 
         return view('admin.settings.social', compact('title', 'configs'));
@@ -169,6 +170,7 @@ class ConfigController extends Controller
             'working_hours' => 'nullable|string|max:100',
             'home_notification' => 'nullable|string',
             'welcome_modal' => 'nullable|boolean',
+            'welcome_modal_auto_close_duration' => 'nullable|string|in:1h,2h',
         ]);
 
         try {
@@ -184,6 +186,13 @@ class ConfigController extends Controller
             config_set('working_hours', $request->working_hours);
             config_set('home_notification', $request->home_notification);
             config_set('welcome_modal', $request->has('welcome_modal') ? true : false);
+            
+            // Validate and set auto-close duration (default to '2h' if invalid)
+            $autoCloseDuration = $request->welcome_modal_auto_close_duration ?? '2h';
+            if (!in_array($autoCloseDuration, ['1h', '2h'])) {
+                $autoCloseDuration = '2h';
+            }
+            config_set('welcome_modal_auto_close_duration', $autoCloseDuration);
 
             // Xóa cache để cập nhật cài đặt
             config_clear_cache();

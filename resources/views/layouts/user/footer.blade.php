@@ -94,8 +94,7 @@
             </div>
             <div class="footer__copyright">
                 &copy; {{ date('Y') }} - Bản quyền thuộc về <a href="/"
-                    target="_blank">{{ strtoupper(request()->getHost()) }}</a> - Thiết kế bởi <a
-                    href="https://tuanori.vn" target="_blank">TUANORI.VN</a>
+                    target="_blank">{{ strtoupper(request()->getHost()) }}</a> 
             </div>
         </div>
     </div>
