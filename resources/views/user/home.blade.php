@@ -284,6 +284,9 @@
                     <button class="welcome-modal__btn" id="welcomeModalBtn">
                         <i class="fas fa-rocket"></i> Bắt đầu ngay
                     </button>
+                    <button class="welcome-modal__btn-close-later" id="welcomeModalCloseLaterBtn">
+                        <i class="fas fa-clock"></i> Không hiển thị trong {{ config_get('welcome_modal_auto_close_duration', '2h') == '1h' ? '1 giờ' : '2 giờ' }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -385,6 +388,7 @@
             border-radius: 0 8px 8px 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
+
     </style>
 @endpush
 
@@ -406,8 +410,28 @@
             const welcomeModal = document.getElementById('welcomeModal');
 
             if (welcomeModal) {
+                // Get auto-close duration from config (default to '2h')
+                const autoCloseDuration = '{{ config_get("welcome_modal_auto_close_duration", "2h") }}';
+                const hours = parseInt(autoCloseDuration);
+                const durationMs = hours * 60 * 60 * 1000;
+
+                // Check if modal should be hidden (within the time duration)
+                const hiddenUntil = localStorage.getItem('welcomeModalHiddenUntil');
+                if (hiddenUntil) {
+                    const now = Date.now();
+                    const hiddenUntilTime = parseInt(hiddenUntil);
+                    if (now < hiddenUntilTime) {
+                        // Still within the hidden period, don't show modal
+                        return;
+                    } else {
+                        // Time period expired, remove the flag
+                        localStorage.removeItem('welcomeModalHiddenUntil');
+                    }
+                }
+
                 const welcomeModalClose = document.querySelector('.welcome-modal__close');
                 const welcomeModalBtn = document.getElementById('welcomeModalBtn');
+                const welcomeModalCloseLaterBtn = document.getElementById('welcomeModalCloseLaterBtn');
 
                 // Luôn hiển thị modal khi trang được tải
                 setTimeout(() => {
@@ -415,36 +439,65 @@
                     document.body.style.overflow = 'hidden';
                 }, 500);
 
-                // Close modal event handlers
-                if (welcomeModalClose) {
-                    welcomeModalClose.addEventListener('click', closeWelcomeModal);
-                }
-
-                if (welcomeModalBtn) {
-                    welcomeModalBtn.addEventListener('click', closeWelcomeModal);
-                }
-
-                // Close when clicking outside modal
-                welcomeModal.addEventListener('click', function(e) {
-                    if (e.target === welcomeModal) {
-                        closeWelcomeModal();
-                    }
-                });
-
-                // Close with ESC key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && welcomeModal.style.display === 'flex') {
-                        closeWelcomeModal();
-                    }
-                });
-
-                function closeWelcomeModal() {
+                // Close modal normally (no localStorage) - for regular close buttons
+                function closeWelcomeModalNormally() {
+                    // Close modal immediately
                     welcomeModal.style.opacity = '0';
                     setTimeout(() => {
                         welcomeModal.style.display = 'none';
                         welcomeModal.style.opacity = '1';
                         document.body.style.overflow = '';
                     }, 300);
+                }
+
+                // Close modal event handlers - all close normally (no localStorage)
+                if (welcomeModalClose) {
+                    welcomeModalClose.addEventListener('click', closeWelcomeModalNormally);
+                }
+
+                if (welcomeModalBtn) {
+                    welcomeModalBtn.addEventListener('click', closeWelcomeModalNormally);
+                }
+
+                // Close when clicking outside modal - closes normally
+                welcomeModal.addEventListener('click', function(e) {
+                    if (e.target === welcomeModal) {
+                        closeWelcomeModalNormally();
+                    }
+                });
+
+                // Close with ESC key - closes normally
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && welcomeModal.style.display === 'flex') {
+                        closeWelcomeModalNormally();
+                    }
+                });
+
+                // Handle "Don't show for X hours" button - set localStorage with timestamp
+                if (welcomeModalCloseLaterBtn) {
+                    welcomeModalCloseLaterBtn.addEventListener('click', function() {
+                        // Calculate when to show again (current time + duration)
+                        const now = Date.now();
+                        const showAgainAt = now + durationMs;
+
+                        // Set localStorage with timestamp
+                        try {
+                            localStorage.setItem('welcomeModalHiddenUntil', showAgainAt.toString());
+                        } catch (e) {
+                            // localStorage may not be available (private browsing mode)
+                            // Just close normally
+                            closeWelcomeModalNormally();
+                            return;
+                        }
+
+                        // Update button text to show confirmation
+                        welcomeModalCloseLaterBtn.innerHTML = '<i class="fas fa-check"></i> Đã lưu';
+                        welcomeModalCloseLaterBtn.disabled = true;
+                        welcomeModalCloseLaterBtn.classList.add('welcome-modal__btn-close-later--active');
+
+                        // Close modal
+                        closeWelcomeModalNormally();
+                    });
                 }
             }
         });
