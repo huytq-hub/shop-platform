@@ -58,7 +58,7 @@
     <link rel="stylesheet" href="{{ asset('assets/fonts/stylesheet.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/reset.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/global.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/home.css') }}" />
+    <link rel="stylesheet" href="{{ asset_versioned('assets/css/home.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/register.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/profile.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/deposit.css') }}" />

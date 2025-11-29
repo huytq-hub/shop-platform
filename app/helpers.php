@@ -370,3 +370,26 @@ if (!function_exists('config_get_image')) {
         return get_image_url($path);
     }
 }
+
+if (!function_exists('asset_versioned')) {
+    /**
+     * Tạo asset URL với versioning để tránh cache
+     * Sử dụng filemtime() để tự động thêm timestamp khi file thay đổi
+     *
+     * @param string $path Đường dẫn asset
+     * @return string URL với query string version
+     */
+    function asset_versioned($path)
+    {
+        $filePath = public_path($path);
+        
+        // Nếu file tồn tại, thêm timestamp
+        if (file_exists($filePath)) {
+            $version = filemtime($filePath);
+            return asset($path) . '?v=' . $version;
+        }
+        
+        // Nếu file không tồn tại, trả về asset() bình thường
+        return asset($path);
+    }
+}
